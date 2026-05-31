@@ -79,6 +79,14 @@ final class Style_Resolver {
 	 * Read visitor preference from cookie.
 	 */
 	public static function read_visitor_preference(): string {
+		if ( ! is_admin() && ! empty( $_GET[ self::VISITOR_COOKIE ] ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$query_slug = sanitize_title( wp_unslash( (string) $_GET[ self::VISITOR_COOKIE ] ) );
+			if ( '' !== $query_slug && self::is_valid_slug( $query_slug ) ) {
+				return $query_slug;
+			}
+		}
+
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		$value = isset( $_COOKIE[ self::VISITOR_COOKIE ] ) ? wp_unslash( $_COOKIE[ self::VISITOR_COOKIE ] ) : '';
 

@@ -25,7 +25,8 @@
 			date.setTime( date.getTime() + days * 24 * 60 * 60 * 1000 );
 			expires = '; expires=' + date.toUTCString();
 		}
-		document.cookie = name + '=' + encodeURIComponent( value ) + expires + '; path=/; SameSite=Lax';
+		var secure = window.location.protocol === 'https:' ? '; Secure' : '';
+		document.cookie = name + '=' + encodeURIComponent( value ) + expires + '; path=/; SameSite=Lax' + secure;
 	}
 
 	function readFromLocalStorage( cfg ) {
@@ -79,8 +80,22 @@
 	}
 
 	function applyPreference( cfg, slug ) {
+		cfg = getCfg( cfg );
 		savePreference( cfg, slug );
-		window.location.reload();
+
+		var name = cookieName( cfg );
+		try {
+			var url = new URL( window.location.href );
+			url.searchParams.set( name, slug );
+			window.location.assign( url.toString() );
+		} catch ( e ) {
+			window.location.href =
+				window.location.pathname +
+				'?' +
+				encodeURIComponent( name ) +
+				'=' +
+				encodeURIComponent( slug );
+		}
 	}
 
 	function syncFromLocalStorage( cfg ) {

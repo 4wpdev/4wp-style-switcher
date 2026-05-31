@@ -41,7 +41,7 @@
 		},
 		{
 			"step": "runPHP",
-			"code": "<?php require_once 'wordpress/wp-load.php'; require_once ABSPATH . 'wp-admin/includes/plugin.php'; $bootstrap = null; foreach ( glob( WP_PLUGIN_DIR . '/*/4wp-style-switcher.php' ) ?: array() as $file ) { $bootstrap = $file; break; } if ( ! $bootstrap ) { return; } $dir = dirname( $bootstrap ); $setup = $dir . '/playground/setup.php'; if ( is_readable( $setup ) ) { require_once $setup; forwp_ss_playground_setup(); } if ( ! is_plugin_active( '4wp-style-switcher/4wp-style-switcher.php' ) ) { activate_plugin( '4wp-style-switcher/4wp-style-switcher.php' ); } ?>"
+			"code": "<?php require_once 'wordpress/wp-load.php'; require_once ABSPATH . 'wp-admin/includes/plugin.php'; $bootstrap = null; foreach ( glob( WP_PLUGIN_DIR . '/*/4wp-style-switcher.php' ) ?: array() as $file ) { $bootstrap = $file; break; } if ( ! $bootstrap ) { return; } $plugin = plugin_basename( $bootstrap ); if ( ! is_plugin_active( $plugin ) ) { activate_plugin( $plugin ); } $dir = dirname( $bootstrap ); $setup = $dir . '/playground/setup.php'; if ( is_readable( $setup ) ) { require_once $setup; forwp_ss_playground_setup(); } ?>"
 		}
 	]
 }

@@ -18,7 +18,7 @@ defined( 'ABSPATH' ) || exit;
 final class Visitor_Storage {
 
 	public static function boot(): void {
-		add_action( 'template_redirect', array( self::class, 'handle_query_switch' ), 1 );
+		add_action( 'init', array( self::class, 'handle_query_switch' ), 0 );
 		add_action( 'wp_enqueue_scripts', array( self::class, 'register_assets' ), 5 );
 		add_action( 'wp_head', array( self::class, 'print_head_sync' ), 0 );
 	}
@@ -138,7 +138,7 @@ final class Visitor_Storage {
 		}
 
 		printf(
-			'<script>(function(c){if(!c||!window.localStorage)return;try{var key=c.storageKey||c.cookieName,name=c.cookieName||key,days=parseInt(c.storageDays,10)||365,expiresAt=Date.now()+days*86400000,match=document.cookie.match(new RegExp("(?:^|; )"+name.replace(/([.$?*|{}()\\[\\]\\\\/+^])/g,"\\\\$1")+"=([^;]*)")),cookieSlug=match?decodeURIComponent(match[1]):"",raw=localStorage.getItem(key),lsData=raw?JSON.parse(raw):null,lsSlug="";if(lsData&&lsData.slug){if(!lsData.expires||Date.now()<=lsData.expires){lsSlug=lsData.slug;}else{localStorage.removeItem(key);}}if(cookieSlug){if(cookieSlug!==lsSlug){localStorage.setItem(key,JSON.stringify({slug:cookieSlug,expires:expiresAt}));}return;}if(lsSlug){document.cookie=name+"="+encodeURIComponent(lsSlug)+"; path=/; SameSite=Lax";}}catch(e){}})(%s);</script>' . "\n",
+			'<script>(function(c){if(!c||!window.localStorage)return;try{var key=c.storageKey||c.cookieName,name=c.cookieName||key,days=parseInt(c.storageDays,10)||365,expiresAt=Date.now()+days*86400000,secure=window.location.protocol==="https:"?"; Secure":"",match=document.cookie.match(new RegExp("(?:^|; )"+name.replace(/([.$?*|{}()\\[\\]\\\\/+^])/g,"\\\\$1")+"=([^;]*)")),cookieSlug=match?decodeURIComponent(match[1]):"",raw=localStorage.getItem(key),lsData=raw?JSON.parse(raw):null,lsSlug="";if(lsData&&lsData.slug){if(!lsData.expires||Date.now()<=lsData.expires){lsSlug=lsData.slug;}else{localStorage.removeItem(key);}}if(cookieSlug){if(cookieSlug!==lsSlug){localStorage.setItem(key,JSON.stringify({slug:cookieSlug,expires:expiresAt}));}return;}if(lsSlug){document.cookie=name+"="+encodeURIComponent(lsSlug)+"; path=/; SameSite=Lax"+secure;}catch(e){}})(%s);</script>' . "\n",
 			$config
 		);
 	}
