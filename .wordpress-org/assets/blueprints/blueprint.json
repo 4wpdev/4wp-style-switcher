@@ -17,6 +17,19 @@
 	},
 	"steps": [
 		{
+			"step": "installPlugin",
+			"pluginData": {
+				"resource": "url",
+				"url": "https://codeload.github.com/4wpdev/4wp-style-switcher/zip/refs/tags/v0.2.0",
+				"caption": "Installing 4WP Style Switcher"
+			},
+			"options": {
+				"activate": true,
+				"targetFolderName": "4wp-style-switcher"
+			},
+			"ifAlreadyInstalled": "overwrite"
+		},
+		{
 			"step": "installTheme",
 			"themeData": {
 				"resource": "wordpress.org/themes",
@@ -27,20 +40,8 @@
 			}
 		},
 		{
-			"step": "installPlugin",
-			"pluginData": {
-				"resource": "git:directory",
-				"url": "https://github.com/4wpdev/4wp-style-switcher",
-				"ref": "v0.2.0",
-				"refType": "tag"
-			},
-			"options": {
-				"activate": true
-			}
-		},
-		{
 			"step": "runPHP",
-			"code": "<?php require_once 'wordpress/wp-load.php'; $setup = WP_PLUGIN_DIR . '/4wp-style-switcher/playground/setup.php'; if ( is_readable( $setup ) ) { require_once $setup; forwp_ss_playground_setup(); } ?>"
+			"code": "<?php require_once 'wordpress/wp-load.php'; require_once ABSPATH . 'wp-admin/includes/plugin.php'; $bootstrap = null; foreach ( glob( WP_PLUGIN_DIR . '/*/4wp-style-switcher.php' ) ?: array() as $file ) { $bootstrap = $file; break; } if ( ! $bootstrap ) { return; } $dir = dirname( $bootstrap ); $setup = $dir . '/playground/setup.php'; if ( is_readable( $setup ) ) { require_once $setup; forwp_ss_playground_setup(); } if ( ! is_plugin_active( '4wp-style-switcher/4wp-style-switcher.php' ) ) { activate_plugin( '4wp-style-switcher/4wp-style-switcher.php' ); } ?>"
 		}
 	]
 }

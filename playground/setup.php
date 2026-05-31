@@ -8,6 +8,29 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
+ * Plugin directory (Playground may use targetFolderName or a generated folder name).
+ */
+function forwp_ss_playground_plugin_dir(): string {
+	static $dir = null;
+
+	if ( null !== $dir ) {
+		return $dir;
+	}
+
+	$dir = '';
+	foreach ( glob( WP_PLUGIN_DIR . '/*/4wp-style-switcher.php' ) ?: array() as $bootstrap ) {
+		$dir = dirname( $bootstrap );
+		break;
+	}
+
+	if ( '' === $dir ) {
+		$dir = WP_PLUGIN_DIR . '/4wp-style-switcher';
+	}
+
+	return $dir;
+}
+
+/**
  * Preconfigure three style variations and inject the menu toggle block.
  */
 function forwp_ss_playground_setup(): void {
