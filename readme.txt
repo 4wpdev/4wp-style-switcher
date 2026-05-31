@@ -4,7 +4,7 @@ Tags: full-site-editing, theme.json, dark mode, style variations, block-theme
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.2.0
+Stable tag: 0.2.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,7 +14,7 @@ Apply theme.json style variations per page or let visitors switch styles on the 
 
 4WP Theme Style Switcher reads **style variations** from the active block theme (`theme.json` and `/styles/*.json`).
 
-**Live demo (WordPress Playground):** https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/4wpdev/4wp-style-switcher/v0.2.0/.wordpress-org/assets/blueprints/blueprint.json
+**Live demo (WordPress Playground):** https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/4wpdev/4wp-style-switcher/v0.2.1/.wordpress-org/assets/blueprints/blueprint.json
 
 The demo uses Twenty Twenty-Five with three variations (Morning, Afternoon, Midnight), a floating visitor switcher, and a Light/Dark toggle in the header menu.
 
@@ -57,10 +57,18 @@ It lists variations allowed on the **Variations** settings tab. The menu Light/D
 
 == Upgrade Notice ==
 
+= 0.2.1 =
+Fixes style switching on WordPress Playground (HTTPS cookie + dynamic demo slugs).
+
 = 0.2.0 =
 First feature release: visitor switcher, Light/Dark navigation block, A/B stats, and Playground demo.
 
 == Changelog ==
+
+= 0.2.1 =
+* Fix visitor style switching on WordPress Playground (server-side cookie via query param).
+* Playground setup resolves variation slugs from the active theme dynamically.
+* Cookie sync uses Secure flag on HTTPS.
 
 = 0.2.0 =
 * Style registry and resolver for theme.json variations.

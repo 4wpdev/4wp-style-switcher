@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.1 — 2026-05-31
+
+- Fix visitor style switching on WordPress Playground (query-param → server-side cookie).
+- Playground setup resolves demo slugs from the active theme.
+- Cookie sync uses `Secure` on HTTPS.
+
 ## 0.2.0 — 2026-05-31
 
 - Visitor frontend switcher (localStorage + cookie).
