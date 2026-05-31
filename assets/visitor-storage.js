@@ -98,6 +98,24 @@
 		}
 	}
 
+	function cleanStyleQueryFromUrl( cfg ) {
+		cfg = getCfg( cfg );
+		var name = cookieName( cfg );
+
+		try {
+			var url = new URL( window.location.href );
+			if ( ! url.searchParams.has( name ) ) {
+				return;
+			}
+
+			url.searchParams.delete( name );
+			var clean = url.pathname + ( url.searchParams.toString() ? '?' + url.searchParams.toString() : '' ) + url.hash;
+			window.history.replaceState( null, '', clean );
+		} catch ( e ) {
+			// Ignore URL API errors.
+		}
+	}
+
 	function syncFromLocalStorage( cfg ) {
 		cfg = getCfg( cfg );
 		var slug = readFromLocalStorage( cfg );
@@ -115,5 +133,14 @@
 		savePreference: savePreference,
 		applyPreference: applyPreference,
 		syncFromLocalStorage: syncFromLocalStorage,
+		cleanStyleQueryFromUrl: cleanStyleQueryFromUrl,
 	};
+
+	if ( document.readyState === 'loading' ) {
+		document.addEventListener( 'DOMContentLoaded', function () {
+			cleanStyleQueryFromUrl();
+		} );
+	} else {
+		cleanStyleQueryFromUrl();
+	}
 } )();

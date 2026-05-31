@@ -53,9 +53,6 @@ final class Visitor_Storage {
 		);
 
 		$_COOKIE[ Style_Resolver::VISITOR_COOKIE ] = $slug;
-
-		wp_safe_redirect( self::get_redirect_url_after_switch() );
-		exit;
 	}
 
 	/**

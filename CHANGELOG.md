@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.2 — 2026-05-31
+
+- Fix Playground blueprint: install plugin zip from the same tag (was still pulling v0.2.0).
+- Apply visitor style on the same request via query param (no redirect; Playground iframe safe).
+- Remove style query param from URL after page load.
+
 ## 0.2.1 — 2026-05-31
 
 - Fix visitor style switching on WordPress Playground (query-param → server-side cookie).
