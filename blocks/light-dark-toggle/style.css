@@ -1,0 +1,96 @@
+.forwp-ss-menu-toggle {
+	align-items: center;
+	display: inline-flex;
+	gap: 4px;
+}
+
+.forwp-ss-menu-toggle__btn {
+	align-items: center;
+	appearance: none;
+	background: transparent;
+	border: 0;
+	border-radius: 999px;
+	color: inherit;
+	cursor: pointer;
+	display: inline-flex;
+	font: inherit;
+	justify-content: center;
+	line-height: 1;
+	padding: 6px;
+	text-decoration: none;
+	transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+
+.forwp-ss-menu-toggle__btn:hover {
+	background: color-mix(in srgb, currentColor 10%, transparent);
+}
+
+.forwp-ss-menu-toggle__btn.is-active {
+	background: color-mix(in srgb, currentColor 16%, transparent);
+}
+
+.forwp-ss-menu-toggle--show-sun .forwp-ss-menu-toggle__icon--moon,
+.forwp-ss-menu-toggle--show-moon .forwp-ss-menu-toggle__icon--sun {
+	display: none;
+}
+
+.forwp-ss-menu-toggle--neutral .forwp-ss-menu-toggle__btn {
+	opacity: 0.55;
+}
+
+.forwp-ss-menu-toggle--neutral .forwp-ss-menu-toggle__btn:hover,
+.forwp-ss-menu-toggle--neutral .forwp-ss-menu-toggle__btn:focus-visible {
+	opacity: 1;
+}
+
+.forwp-ss-menu-toggle__btn:focus {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+
+.forwp-ss-menu-toggle__icon {
+	align-items: center;
+	display: inline-flex;
+	flex-shrink: 0;
+	justify-content: center;
+}
+
+.forwp-ss-menu-toggle__icon svg {
+	display: block;
+	height: 1.25em;
+	width: 1.25em;
+}
+
+.forwp-ss-menu-toggle--placeholder {
+	border: 1px dashed #c3c4c7;
+	border-radius: 4px;
+	color: #646970;
+	font-size: 13px;
+	padding: 8px 12px;
+}
+
+.forwp-ss-menu-toggle--editor .forwp-ss-menu-toggle__editor-note {
+	color: #646970;
+	font-size: 12px;
+	margin: 4px 0 0;
+}
+
+.forwp-ss-menu-toggle__icon--moon svg {
+	stroke-width: 1.35;
+}
+
+.wp-block-navigation .forwp-ss-menu-toggle {
+	min-height: 24px;
+}
+
+.wp-block-navigation .wp-block-navigation-item .forwp-ss-menu-toggle__btn {
+	background: transparent;
+	color: var(--wp--preset--color--contrast, currentColor);
+	font: inherit;
+}
+
+.wp-block-navigation .forwp-ss-menu-toggle__icon svg {
+	color: inherit;
+	fill: currentColor;
+	stroke: currentColor;
+}

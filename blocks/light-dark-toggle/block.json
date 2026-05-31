@@ -1,0 +1,27 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "forwp-style-switcher/light-dark-toggle",
+	"title": "Light / Dark",
+	"category": "theme",
+	"parent": [ "core/navigation" ],
+	"description": "Sun and moon toggle for Light/Dark style variations in the navigation menu.",
+	"keywords": [ "light", "dark", "theme", "style", "navigation", "menu" ],
+	"textdomain": "4wp-style-switcher",
+	"icon": "admin-customizer",
+	"supports": {
+		"html": false,
+		"reusable": false,
+		"multiple": false,
+		"interactivity": false,
+		"spacing": {
+			"margin": true,
+			"padding": true
+		}
+	},
+	"editorScript": "file:./editor.js",
+	"editorStyle": "file:./style.css",
+	"style": "file:./style.css",
+	"viewScript": "file:./view.js",
+	"render": "file:./render.php"
+}
