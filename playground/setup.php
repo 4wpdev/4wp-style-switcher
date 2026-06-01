@@ -225,6 +225,7 @@ function forwp_ss_playground_create_pages( array $slugs ): array {
 
 	$definitions = array(
 		'about' => array(
+			'nav_label' => 'About Plugin',
 			'title'   => 'About Plugin',
 			'slug'    => 'about-plugin',
 			'style'   => $slugs['morning'],
@@ -232,7 +233,8 @@ function forwp_ss_playground_create_pages( array $slugs ): array {
 			'content' => forwp_ss_playground_about_content( $slugs, $evening_title, $night_title ),
 		),
 		'morning' => array(
-			'title'   => 'Morning',
+			'nav_label' => 'Morning',
+			'title'   => forwp_ss_playground_variation_title( $slugs['morning'] ),
 			'slug'    => 'morning',
 			'style'   => $slugs['morning'],
 			'locked'  => false,
@@ -242,7 +244,8 @@ function forwp_ss_playground_create_pages( array $slugs ): array {
 			),
 		),
 		'afternoon' => array(
-			'title'   => 'Afternoon',
+			'nav_label' => 'Afternoon',
+			'title'   => forwp_ss_playground_variation_title( $slugs['afternoon'] ),
 			'slug'    => 'afternoon',
 			'style'   => $slugs['afternoon'],
 			'locked'  => true,
@@ -252,7 +255,8 @@ function forwp_ss_playground_create_pages( array $slugs ): array {
 			),
 		),
 		'evening' => array(
-			'title'   => 'Evening',
+			'nav_label' => 'Evening',
+			'title'   => forwp_ss_playground_variation_title( $slugs['evening'] ),
 			'slug'    => 'evening',
 			'style'   => $slugs['evening'],
 			'locked'  => false,
@@ -262,13 +266,14 @@ function forwp_ss_playground_create_pages( array $slugs ): array {
 			),
 		),
 		'night' => array(
-			'title'   => 'Night',
+			'nav_label' => 'Night',
+			'title'   => forwp_ss_playground_variation_title( $slugs['night'] ),
 			'slug'    => 'night',
 			'style'   => $slugs['night'],
 			'locked'  => false,
 			'content' => forwp_ss_playground_page_content(
 				$slugs['night'],
-				'Demo nav label is “Night”; the active preset comes from the theme variation above. Visitors can switch freely.'
+				'Demo nav label is “Night”; the preset above is the theme.json variation applied to this page. Visitors can switch freely.'
 			),
 		),
 	);
@@ -374,14 +379,8 @@ function forwp_ss_playground_about_content( array $slugs, string $evening_title,
 }
 
 function forwp_ss_playground_page_content( string $variation_slug, string $intro_html ): string {
-	$variation_title = forwp_ss_playground_variation_title( $variation_slug );
-
-	return '<!-- wp:group {"layout":{"type":"constrained"},"style":{"spacing":{"blockGap":"var:preset|spacing|40","padding":{"top":"var:preset|spacing|50","bottom":"var:preset|spacing|60"}}}} -->
-<div class="wp-block-group" style="padding-top:var(--wp--preset--spacing--50);padding-bottom:var(--wp--preset--spacing--60)">
-
-<!-- wp:heading {"level":1} -->
-<h1 class="wp-block-heading">' . esc_html( $variation_title ) . '</h1>
-<!-- /wp:heading -->
+	return '<!-- wp:group {"layout":{"type":"constrained"},"style":{"spacing":{"blockGap":"var:preset|spacing|40","padding":{"top":"var:preset|spacing|30","bottom":"var:preset|spacing|60"}}}} -->
+<div class="wp-block-group" style="padding-top:var(--wp--preset--spacing--30);padding-bottom:var(--wp--preset--spacing--60)">
 
 <!-- wp:paragraph {"fontSize":"small"} -->
 <p class="has-small-font-size"><code>' . esc_html( $variation_slug ) . '</code> · theme.json style variation</p>
@@ -401,12 +400,21 @@ function forwp_ss_playground_page_content( string $variation_slug, string $intro
 function forwp_ss_playground_create_navigation( array $pages ): int {
 	$links = array( 'about', 'morning', 'afternoon', 'evening', 'night' );
 
+	$nav_labels = array(
+		'about'     => 'About Plugin',
+		'morning'   => 'Morning',
+		'afternoon' => 'Afternoon',
+		'evening'   => 'Evening',
+		'night'     => 'Night',
+	);
+
 	$content = '';
 	foreach ( $links as $key ) {
 		if ( empty( $pages[ $key ] ) ) {
 			continue;
 		}
-		$content .= forwp_ss_playground_nav_link_block( $pages[ $key ], get_the_title( $pages[ $key ] ) ) . "\n";
+		$label = $nav_labels[ $key ] ?? get_the_title( $pages[ $key ] );
+		$content .= forwp_ss_playground_nav_link_block( $pages[ $key ], $label ) . "\n";
 	}
 	$content .= "\n<!-- wp:forwp-style-switcher/light-dark-toggle /-->\n";
 
