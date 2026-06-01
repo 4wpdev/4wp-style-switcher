@@ -4,7 +4,7 @@ Apply **theme.json style variations** per page, let visitors switch styles on th
 
 ## Try it in WordPress Playground
 
-**[Open live demo →](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/4wpdev/4wp-style-switcher/v0.2.3/.wordpress-org/assets/blueprints/blueprint.json)**
+**[Open live demo →](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/4wpdev/4wp-style-switcher/v0.2.4/.wordpress-org/assets/blueprints/blueprint.json)**
 
 | Setting | Value |
 |--------|--------|

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.4 — 2026-05-31
+
+- Playground demo: page titles from theme.json variation names; no duplicate H1 in content.
+- Per-page styles (Morning / Afternoon / Evening / Night); Afternoon locked.
+- Light/Dark navigation toggle inactive when page style is locked.
+
 ## 0.2.3 — 2026-05-31
 
 - Playground demo: five pages (About, Morning, Afternoon, Night, + alternate theme variation), per-page styles, A/B light/dark, switcher bottom-right, locked pages, shared header/footer navigation.

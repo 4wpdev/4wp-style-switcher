@@ -95,6 +95,21 @@ function forwp_ss_playground_resolve_demo_slugs(): array {
 		$color_variations = $variations;
 	}
 
+	$find = static function ( string $preferred_slug ) use ( $color_variations ): string {
+		$preferred_slug = sanitize_title( $preferred_slug );
+		foreach ( $color_variations as $variation ) {
+			if ( $variation['slug'] === $preferred_slug ) {
+				return $preferred_slug;
+			}
+		}
+		foreach ( $color_variations as $variation ) {
+			if ( 0 === strcasecmp( (string) $variation['title'], $preferred_slug ) ) {
+				return $variation['slug'];
+			}
+		}
+		return '';
+	};
+
 	$pick = static function ( array $keywords ) use ( $color_variations ): string {
 		foreach ( $keywords as $keyword ) {
 			foreach ( $color_variations as $variation ) {
@@ -110,10 +125,10 @@ function forwp_ss_playground_resolve_demo_slugs(): array {
 		return '';
 	};
 
-	$morning   = $pick( array( 'morning', 'sunrise', 'day' ) );
-	$afternoon = $pick( array( 'afternoon', 'noon' ) );
-	$evening   = $pick( array( 'evening', 'twilight', 'dusk', 'sunset' ) );
-	$night     = $pick( array( 'midnight', 'night' ) );
+	$morning   = $find( 'morning' ) ?: $pick( array( 'morning', 'sunrise' ) );
+	$afternoon = $find( 'afternoon' ) ?: $pick( array( 'afternoon' ) );
+	$evening   = $find( 'evening' ) ?: $pick( array( 'evening', 'twilight', 'dusk', 'sunset' ) );
+	$night     = $find( 'midnight' ) ?: $find( 'night' ) ?: $pick( array( 'midnight', 'night' ) );
 
 	$core = array_values(
 		array_unique(
@@ -147,7 +162,15 @@ function forwp_ss_playground_resolve_demo_slugs(): array {
 		$night = $core[ count( $core ) - 1 ];
 	}
 
-	$allowed = array_values( array_unique( array( $morning, $afternoon, $evening, $night ) ) );
+	// Avoid demo pages sharing one slug (e.g. fuzzy keyword match).
+	if ( $morning === $afternoon ) {
+		$afternoon = $find( 'afternoon' ) ?: $pick( array( 'noon' ) );
+	}
+	if ( $afternoon === $morning || '' === $afternoon ) {
+		$afternoon = $pick( array( 'noon' ) );
+	}
+
+	$allowed = array_values( array_unique( array_filter( array( $morning, $afternoon, $evening, $night ) ) ) );
 
 	return array(
 		'allowed'   => $allowed,
