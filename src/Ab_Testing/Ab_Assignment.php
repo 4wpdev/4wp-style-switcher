@@ -37,8 +37,15 @@ final class Ab_Assignment {
 			return;
 		}
 
-		$existing = Style_Resolver::read_visitor_preference();
-		if ( '' !== $existing && Style_Resolver::is_valid_slug( $existing ) ) {
+		if ( $post_id > 0 ) {
+			$page_style = sanitize_title( (string) get_post_meta( $post_id, Meta_Keys::PAGE_STYLE_SLUG, true ) );
+			if ( '' !== $page_style && Style_Resolver::is_theme_variation_slug( $page_style ) ) {
+				return;
+			}
+		}
+
+		$existing = Style_Resolver::read_cookie_style();
+		if ( '' !== $existing && Style_Resolver::is_allowed_slug( $existing ) ) {
 			return;
 		}
 

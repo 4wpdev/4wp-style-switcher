@@ -12,7 +12,7 @@ use ForWP\StyleSwitcher\Admin\Settings;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Priority: locked page style > visitor preference > per-page style > site default.
+ * Priority: locked page style > explicit switch (query) > per-page style > visitor cookie > site default.
  */
 final class Style_Resolver {
 
@@ -40,7 +40,9 @@ final class Style_Resolver {
 
 		$locked = $post_id > 0 && (bool) get_post_meta( $post_id, Meta_Keys::PAGE_STYLE_LOCKED, true );
 
-		$visitor_style = self::read_visitor_preference();
+		$query_style   = self::read_query_style();
+		$cookie_style  = self::read_cookie_style();
+		$visitor_style = '' !== $query_style ? $query_style : $cookie_style;
 		$site_default  = Settings::instance()->get_default_variation();
 
 		$slug   = '';
@@ -49,12 +51,15 @@ final class Style_Resolver {
 		if ( $locked && '' !== $page_style && self::is_theme_variation_slug( $page_style ) ) {
 			$slug   = $page_style;
 			$source = 'page_locked';
-		} elseif ( '' !== $visitor_style && self::is_allowed_slug( $visitor_style ) ) {
-			$slug   = $visitor_style;
-			$source = 'visitor';
+		} elseif ( '' !== $query_style && self::is_allowed_slug( $query_style ) ) {
+			$slug   = $query_style;
+			$source = 'visitor_query';
 		} elseif ( '' !== $page_style && self::is_theme_variation_slug( $page_style ) ) {
 			$slug   = $page_style;
 			$source = 'page';
+		} elseif ( '' !== $cookie_style && self::is_allowed_slug( $cookie_style ) ) {
+			$slug   = $cookie_style;
+			$source = 'visitor';
 		} elseif ( '' !== $site_default && self::is_allowed_slug( $site_default ) ) {
 			$slug   = $site_default;
 			$source = 'site_default';
@@ -76,17 +81,38 @@ final class Style_Resolver {
 	}
 
 	/**
-	 * Read visitor preference from cookie.
+	 * Combined visitor preference (query param or cookie).
 	 */
 	public static function read_visitor_preference(): string {
-		if ( ! is_admin() && ! empty( $_GET[ self::VISITOR_COOKIE ] ) ) {
-			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			$query_slug = sanitize_title( wp_unslash( (string) $_GET[ self::VISITOR_COOKIE ] ) );
-			if ( '' !== $query_slug && Style_Resolver::is_allowed_slug( $query_slug ) ) {
-				return $query_slug;
-			}
+		$query = self::read_query_style();
+		if ( '' !== $query ) {
+			return $query;
 		}
 
+		return self::read_cookie_style();
+	}
+
+	/**
+	 * Style from ?forwp_ss_style= on the current request (explicit switch).
+	 */
+	public static function read_query_style(): string {
+		if ( is_admin() || empty( $_GET[ self::VISITOR_COOKIE ] ) ) {
+			return '';
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$query_slug = sanitize_title( wp_unslash( (string) $_GET[ self::VISITOR_COOKIE ] ) );
+		if ( '' !== $query_slug && self::is_allowed_slug( $query_slug ) ) {
+			return $query_slug;
+		}
+
+		return '';
+	}
+
+	/**
+	 * Persisted visitor cookie only.
+	 */
+	public static function read_cookie_style(): string {
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		$value = isset( $_COOKIE[ self::VISITOR_COOKIE ] ) ? wp_unslash( $_COOKIE[ self::VISITOR_COOKIE ] ) : '';
 

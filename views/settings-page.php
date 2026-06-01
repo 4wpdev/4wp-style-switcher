@@ -327,8 +327,9 @@ $heading_svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" widt
 						<summary><?php esc_html_e( 'Resolution priority', '4wp-style-switcher' ); ?></summary>
 						<ol class="forwp-ss-steps">
 							<li><?php esc_html_e( 'Locked page style (admin checkbox in the editor)', '4wp-style-switcher' ); ?></li>
-							<li><?php esc_html_e( 'Visitor cookie preference (if switcher enabled and page not locked)', '4wp-style-switcher' ); ?></li>
+							<li><?php esc_html_e( 'Explicit visitor switch on this request (?forwp_ss_style= in the URL)', '4wp-style-switcher' ); ?></li>
 							<li><?php esc_html_e( 'Per-page style from the block editor', '4wp-style-switcher' ); ?></li>
+							<li><?php esc_html_e( 'Visitor cookie preference (if switcher enabled and page not locked)', '4wp-style-switcher' ); ?></li>
 							<li><?php esc_html_e( 'Site default from this settings screen', '4wp-style-switcher' ); ?></li>
 						</ol>
 					</details>
