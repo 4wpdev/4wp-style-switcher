@@ -4,7 +4,7 @@ Tags: full-site-editing, theme.json, dark mode, style variations, block-theme
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.2.4
+Stable tag: 0.2.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,9 +14,9 @@ Apply theme.json style variations per page or let visitors switch styles on the 
 
 4WP Theme Style Switcher reads **style variations** from the active block theme (`theme.json` and `/styles/*.json`).
 
-**Live demo (WordPress Playground):** https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/4wpdev/4wp-style-switcher/v0.2.4/.wordpress-org/assets/blueprints/blueprint.json
+**Live demo (WordPress Playground):** https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/4wpdev/4wp-style-switcher/v0.2.5/.wordpress-org/assets/blueprints/blueprint.json
 
-The demo site **Style Switcher** uses Twenty Twenty-Five: five pages (About, Morning, Afternoon, Night, plus one alternate theme variation), per-page styles, A/B light vs dark, a bottom-right visitor switcher, and Light/Dark in the header and footer menus.
+The demo site **Style Switcher** uses Twenty Twenty-Five: About, Morning, Afternoon, and Evening pages with per-page styles, A/B light vs dark, a bottom-right visitor switcher, and Light/Dark in the header and footer menus.
 
 **Page style (editor)** — pick a variation for a page; optionally lock it so visitors cannot override it.
 
@@ -57,6 +57,9 @@ It lists variations allowed on the **Variations** settings tab. The menu Light/D
 
 == Upgrade Notice ==
 
+= 0.2.5 =
+Performance: request-level caching for style resolution and theme.json variation lookups.
+
 = 0.2.4 =
 Playground demo: per-page theme.json titles, Afternoon locked, Light/Dark disabled when locked.
 
@@ -69,6 +72,10 @@ Fixes style switching on WordPress Playground (HTTPS cookie + dynamic demo slugs
 First feature release: visitor switcher, Light/Dark navigation block, A/B stats, and Playground demo.
 
 == Changelog ==
+
+= 0.2.5 =
+* Request-level caching in Style_Registry, Style_Resolver, and Style_Applicator (faster page loads).
+* GitHub README banner; Playground blueprint and demo links updated for v0.2.5.
 
 = 0.2.4 =
 * Playground demo pages use theme.json variation titles (single H1 from template, slug in content).

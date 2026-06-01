@@ -20,6 +20,13 @@ defined( 'ABSPATH' ) || exit;
  */
 final class Style_Applicator {
 
+	/**
+	 * Prepared WP_Theme_JSON objects keyed by origin:slug.
+	 *
+	 * @var array<string, WP_Theme_JSON>
+	 */
+	private static $prepared_theme_json = array();
+
 	public static function boot(): void {
 		add_filter( 'body_class', array( self::class, 'filter_body_class' ) );
 		add_filter( 'wp_theme_json_data_theme', array( self::class, 'filter_theme_json_data' ) );
@@ -86,8 +93,16 @@ final class Style_Applicator {
 			return $theme_json;
 		}
 
+		$cache_key = $origin . ':' . $resolved['slug'];
+		if ( ! isset( self::$prepared_theme_json[ $cache_key ] ) ) {
+			self::$prepared_theme_json[ $cache_key ] = new WP_Theme_JSON(
+				self::prepare_variation_for_merge( $variation ),
+				$origin
+			);
+		}
+
 		$theme = $theme_json->get_theme_json();
-		$theme->merge( new WP_Theme_JSON( self::prepare_variation_for_merge( $variation ), $origin ) );
+		$theme->merge( self::$prepared_theme_json[ $cache_key ] );
 
 		if ( $fire_hook ) {
 			/**

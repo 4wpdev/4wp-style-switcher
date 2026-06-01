@@ -17,23 +17,41 @@ defined( 'ABSPATH' ) || exit;
 final class Style_Registry {
 
 	/**
+	 * Deduped raw variations indexed by slug (one load per request).
+	 *
+	 * @var array<string, array<string, mixed>>|null
+	 */
+	private static $raw_by_slug = null;
+
+	/**
+	 * @var array<int, array{slug: string, title: string}>|null
+	 */
+	private static $theme_variations = null;
+
+	/**
+	 * @var array<int, array{slug: string, title: string}>|null
+	 */
+	private static $allowed_variations = null;
+
+	/**
 	 * All style variations from the active theme.
 	 *
 	 * @return array<int, array{slug: string, title: string}>
 	 */
 	public static function get_theme_variations(): array {
-		if ( ! Block_Theme_Guard::is_supported() || ! class_exists( 'WP_Theme_JSON_Resolver' ) ) {
-			return array();
+		if ( null !== self::$theme_variations ) {
+			return self::$theme_variations;
 		}
 
-		$raw = self::get_raw_theme_variations();
+		if ( ! Block_Theme_Guard::is_supported() || ! class_exists( 'WP_Theme_JSON_Resolver' ) ) {
+			self::$theme_variations = array();
+			return self::$theme_variations;
+		}
+
+		self::ensure_raw_index();
+
 		$out = array();
-
-		foreach ( $raw as $variation ) {
-			if ( ! is_array( $variation ) ) {
-				continue;
-			}
-
+		foreach ( self::$raw_by_slug as $variation ) {
 			$slug = self::variation_slug( $variation );
 			if ( '' === $slug ) {
 				continue;
@@ -53,7 +71,9 @@ final class Style_Registry {
 		 * @param array<int, array{slug: string, title: string}> $out Variations.
 		 * @param array<int, array<string, mixed>>              $raw Raw theme data.
 		 */
-		return apply_filters( 'forwp_style_switcher_variations', $out, $raw );
+		self::$theme_variations = apply_filters( 'forwp_style_switcher_variations', $out, array_values( self::$raw_by_slug ) );
+
+		return self::$theme_variations;
 	}
 
 	/**
@@ -62,19 +82,28 @@ final class Style_Registry {
 	 * @return array<int, array{slug: string, title: string}>
 	 */
 	public static function get_variations(): array {
-		$allowed = Settings::instance()->get_allowed_variation_slugs();
-		if ( empty( $allowed ) ) {
-			return array();
+		if ( null !== self::$allowed_variations ) {
+			return self::$allowed_variations;
 		}
 
-		$out = array();
+		$allowed = Settings::instance()->get_allowed_variation_slugs();
+		if ( empty( $allowed ) ) {
+			self::$allowed_variations = array();
+			return self::$allowed_variations;
+		}
+
+		$allowed_set = array_fill_keys( $allowed, true );
+		$out         = array();
+
 		foreach ( self::get_theme_variations() as $variation ) {
-			if ( in_array( $variation['slug'], $allowed, true ) ) {
+			if ( isset( $allowed_set[ $variation['slug'] ] ) ) {
 				$out[] = $variation;
 			}
 		}
 
-		return $out;
+		self::$allowed_variations = $out;
+
+		return self::$allowed_variations;
 	}
 
 	/**
@@ -88,21 +117,27 @@ final class Style_Registry {
 			return null;
 		}
 
-		if ( ! Block_Theme_Guard::is_supported() || ! class_exists( 'WP_Theme_JSON_Resolver' ) ) {
+		if ( ! self::has_variation_raw( $slug ) ) {
 			return null;
 		}
 
-		foreach ( self::get_raw_theme_variations() as $variation ) {
-			if ( ! is_array( $variation ) ) {
-				continue;
-			}
+		self::ensure_raw_index();
 
-			if ( self::variation_slug( $variation ) === $slug ) {
-				return $variation;
-			}
+		return self::$raw_by_slug[ $slug ] ?? null;
+	}
+
+	/**
+	 * Whether a slug exists in the active theme (O(1) after first load).
+	 */
+	public static function has_variation_raw( string $slug ): bool {
+		$slug = sanitize_title( $slug );
+		if ( '' === $slug || ! Block_Theme_Guard::is_supported() || ! class_exists( 'WP_Theme_JSON_Resolver' ) ) {
+			return false;
 		}
 
-		return null;
+		self::ensure_raw_index();
+
+		return isset( self::$raw_by_slug[ $slug ] );
 	}
 
 	/**
@@ -126,16 +161,31 @@ final class Style_Registry {
 	}
 
 	/**
-	 * Raw theme variations from core, deduplicated by slug.
-	 *
-	 * WordPress scans /styles/ recursively, so themes like Twenty Twenty-Five
-	 * expose the same slug twice (e.g. styles/04-afternoon.json and styles/colors/04-afternoon.json).
-	 * When duplicates exist, keep the richest variation (full preset over color partial).
-	 *
-	 * @return array<int, array<string, mixed>>
+	 * Build the slug index once per request.
 	 */
-	private static function get_raw_theme_variations(): array {
-		return self::dedupe_variations_by_slug( \WP_Theme_JSON_Resolver::get_style_variations( 'theme' ) );
+	private static function ensure_raw_index(): void {
+		if ( null !== self::$raw_by_slug ) {
+			return;
+		}
+
+		self::$raw_by_slug = array();
+
+		if ( ! Block_Theme_Guard::is_supported() || ! class_exists( 'WP_Theme_JSON_Resolver' ) ) {
+			return;
+		}
+
+		foreach ( self::dedupe_variations_by_slug( \WP_Theme_JSON_Resolver::get_style_variations( 'theme' ) ) as $variation ) {
+			if ( ! is_array( $variation ) ) {
+				continue;
+			}
+
+			$slug = self::variation_slug( $variation );
+			if ( '' === $slug ) {
+				continue;
+			}
+
+			self::$raw_by_slug[ $slug ] = $variation;
+		}
 	}
 
 	/**
@@ -169,7 +219,7 @@ final class Style_Registry {
 	 * @param array<string, mixed> $variation Raw variation from core.
 	 */
 	private static function variation_weight( array $variation ): int {
-		$weight = strlen( wp_json_encode( $variation ) );
+		$weight = count( $variation, COUNT_RECURSIVE );
 
 		if ( ! empty( $variation['styles'] ) ) {
 			$weight += 1000;

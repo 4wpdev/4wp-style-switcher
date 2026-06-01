@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.5 — 2026-06-01
+
+- Performance: request-level caching for theme variation lookups, style resolution, and theme.json merge preparation.
+- GitHub README banner (`.github/4WP-Style-Switcher.png`); Playground blueprint and demo links updated to v0.2.5.
+
 ## 0.2.4 — 2026-05-31
 
 - Playground demo: page titles from theme.json variation names; no duplicate H1 in content.

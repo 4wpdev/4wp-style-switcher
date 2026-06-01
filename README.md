@@ -1,15 +1,19 @@
+<p align="center">
+  <img src=".github/4WP-Style-Switcher.png" alt="4WP Style Switcher — theme.json style variations for FSE block themes" width="1280" />
+</p>
+
 # 4WP Style Switcher
 
 Apply **theme.json style variations** per page, let visitors switch styles on the frontend, and add a **Light/Dark** toggle to the navigation menu (FSE block themes).
 
 ## Try it in WordPress Playground
 
-**[Open live demo →](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/4wpdev/4wp-style-switcher/v0.2.4/.wordpress-org/assets/blueprints/blueprint.json)**
+**[Open live demo →](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/4wpdev/4wp-style-switcher/v0.2.5/.wordpress-org/assets/blueprints/blueprint.json)**
 
 | Setting | Value |
 |--------|--------|
 | Theme | Twenty Twenty-Five |
-| Allowed variations | Morning, Afternoon, Midnight |
+| Allowed variations | Morning, Afternoon, Evening |
 | Default style | Morning |
 | Light / Dark | Morning ↔ Midnight |
 | Frontend switcher | On (bottom right) |

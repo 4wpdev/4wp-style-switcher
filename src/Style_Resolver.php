@@ -19,6 +19,13 @@ final class Style_Resolver {
 	public const VISITOR_COOKIE = 'forwp_ss_style';
 
 	/**
+	 * Resolved style per post id within the current request.
+	 *
+	 * @var array<int, array<string, mixed>>
+	 */
+	private static $resolve_cache = array();
+
+	/**
 	 * Resolve style for a post context.
 	 *
 	 * @param int $post_id Post id (0 = current queried object).
@@ -33,6 +40,10 @@ final class Style_Resolver {
 	 */
 	public static function resolve( int $post_id = 0 ): array {
 		$post_id = $post_id > 0 ? $post_id : (int) get_queried_object_id();
+
+		if ( isset( self::$resolve_cache[ $post_id ] ) ) {
+			return self::$resolve_cache[ $post_id ];
+		}
 
 		$page_style = $post_id > 0
 			? sanitize_title( (string) get_post_meta( $post_id, Meta_Keys::PAGE_STYLE_SLUG, true ) )
@@ -70,7 +81,7 @@ final class Style_Resolver {
 			&& Block_Theme_Guard::is_supported()
 			&& ! empty( Style_Registry::get_variations() );
 
-		return array(
+		self::$resolve_cache[ $post_id ] = array(
 			'slug'           => $slug,
 			'source'         => $source,
 			'locked'         => $locked,
@@ -78,6 +89,8 @@ final class Style_Resolver {
 			'page_style'     => $page_style,
 			'visitor_style'  => $visitor_style,
 		);
+
+		return self::$resolve_cache[ $post_id ];
 	}
 
 	/**
@@ -123,14 +136,23 @@ final class Style_Resolver {
 	 * Whether slug exists in the active theme (any variation).
 	 */
 	public static function is_theme_variation_slug( string $slug ): bool {
-		return null !== Style_Registry::get_variation_raw( $slug );
+		return Style_Registry::has_variation_raw( $slug );
 	}
 
 	/**
 	 * Whether slug is allowed for visitor switching / site default.
 	 */
 	public static function is_allowed_slug( string $slug ): bool {
-		return null !== Style_Registry::get_variation( $slug );
+		$slug = sanitize_title( $slug );
+		if ( '' === $slug ) {
+			return false;
+		}
+
+		if ( ! in_array( $slug, Settings::instance()->get_allowed_variation_slugs(), true ) ) {
+			return false;
+		}
+
+		return Style_Registry::has_variation_raw( $slug );
 	}
 
 	/**
