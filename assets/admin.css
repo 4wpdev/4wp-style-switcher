@@ -263,10 +263,20 @@
 	text-align: right;
 }
 
+.forwp-ss-doc-accordion details {
 	border: 1px solid #dcdcde;
 	border-radius: 4px;
 	margin-bottom: 10px;
 	padding: 10px 14px;
+}
+
+.forwp-ss-doc-accordion details[open] {
+	padding-bottom: 14px;
+}
+
+.forwp-ss-doc-accordion details > p,
+.forwp-ss-doc-accordion details > ol {
+	margin-top: 10px;
 }
 
 .forwp-ss-doc-accordion summary {

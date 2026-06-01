@@ -1,9 +1,9 @@
 {
 	"$schema": "https://playground.wordpress.net/blueprint-schema.json",
 	"meta": {
-		"title": "4WP Style Switcher — live demo",
+		"title": "Style Switcher — 4WP demo",
 		"author": "4wpdev",
-		"description": "Twenty Twenty-Five with three style variations, floating switcher, and Light/Dark toggle in the header menu.",
+		"description": "Demo site: per-page theme.json styles, Light/Dark menu toggle, floating switcher, A/B testing. Twenty Twenty-Five.",
 		"categories": ["plugins", "theme", "fse"]
 	},
 	"login": true,
@@ -20,7 +20,7 @@
 			"step": "installPlugin",
 			"pluginData": {
 				"resource": "url",
-				"url": "https://codeload.github.com/4wpdev/4wp-style-switcher/zip/refs/tags/v0.2.2",
+				"url": "https://codeload.github.com/4wpdev/4wp-style-switcher/zip/refs/tags/v0.2.3",
 				"caption": "Installing 4WP Style Switcher"
 			},
 			"options": {

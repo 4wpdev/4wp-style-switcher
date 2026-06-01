@@ -4,7 +4,7 @@ Tags: full-site-editing, theme.json, dark mode, style variations, block-theme
 Requires at least: 6.4
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 0.2.2
+Stable tag: 0.2.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,9 +14,9 @@ Apply theme.json style variations per page or let visitors switch styles on the 
 
 4WP Theme Style Switcher reads **style variations** from the active block theme (`theme.json` and `/styles/*.json`).
 
-**Live demo (WordPress Playground):** https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/4wpdev/4wp-style-switcher/v0.2.2/.wordpress-org/assets/blueprints/blueprint.json
+**Live demo (WordPress Playground):** https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/4wpdev/4wp-style-switcher/v0.2.3/.wordpress-org/assets/blueprints/blueprint.json
 
-The demo uses Twenty Twenty-Five with three variations (Morning, Afternoon, Midnight), a floating visitor switcher, and a Light/Dark toggle in the header menu.
+The demo site **Style Switcher** uses Twenty Twenty-Five: five pages (About, Morning, Afternoon, Night, plus one alternate theme variation), per-page styles, A/B light vs dark, a bottom-right visitor switcher, and Light/Dark in the header and footer menus.
 
 **Page style (editor)** — pick a variation for a page; optionally lock it so visitors cannot override it.
 
@@ -57,8 +57,10 @@ It lists variations allowed on the **Variations** settings tab. The menu Light/D
 
 == Upgrade Notice ==
 
+= 0.2.3 =
+Playground showcase site: per-page styles, A/B testing, locked pages, shared nav in header/footer.
+
 = 0.2.2 =
-Fixes Playground demo: blueprint now installs the matching plugin version; style switch applies without redirect.
 
 = 0.2.1 =
 Fixes style switching on WordPress Playground (HTTPS cookie + dynamic demo slugs).
@@ -68,8 +70,13 @@ First feature release: visitor switcher, Light/Dark navigation block, A/B stats,
 
 == Changelog ==
 
+= 0.2.3 =
+* Playground demo site "Style Switcher" with About / Morning / Afternoon / Night / plus one alternate theme variation page.
+* Per-page style meta, A/B light vs dark, visitor switcher bottom-right, two locked demo pages.
+* Shared navigation in header and footer template parts.
+* Fix Documentation tab accordion spacing in admin.
+
 = 0.2.2 =
-* Fix Playground blueprint installing the old v0.2.0 plugin zip instead of the current release.
 * Apply visitor style from the query param on the same request (no redirect; works in Playground iframe).
 * Clean the style query param from the URL after the page loads.
 
