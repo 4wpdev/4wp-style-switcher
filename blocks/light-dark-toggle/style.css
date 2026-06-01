@@ -43,6 +43,25 @@
 	opacity: 1;
 }
 
+.forwp-ss-menu-toggle--disabled .forwp-ss-menu-toggle__btn,
+.forwp-ss-menu-toggle__btn:disabled {
+	cursor: not-allowed;
+	opacity: 0.35;
+	pointer-events: none;
+}
+
+.forwp-ss-menu-toggle--disabled .forwp-ss-menu-toggle__btn:hover,
+.forwp-ss-menu-toggle--disabled .forwp-ss-menu-toggle__btn:focus-visible,
+.forwp-ss-menu-toggle__btn:disabled:hover,
+.forwp-ss-menu-toggle__btn:disabled:focus-visible {
+	background: transparent;
+	opacity: 0.35;
+}
+
+.forwp-ss-menu-toggle--disabled.forwp-ss-menu-toggle--neutral .forwp-ss-menu-toggle__btn {
+	opacity: 0.35;
+}
+
 .forwp-ss-menu-toggle__btn:focus {
 	outline: 2px solid currentColor;
 	outline-offset: 2px;

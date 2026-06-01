@@ -51,18 +51,22 @@ function forwp_ss_playground_setup(): void {
  *   default: string,
  *   light: string,
  *   dark: string,
- *   medium: string,
- *   exotic: string  Non-standard variation slug from the active theme (e.g. evening).
+ *   morning: string,
+ *   afternoon: string,
+ *   evening: string,
+ *   night: string
  * }
  */
 function forwp_ss_playground_resolve_demo_slugs(): array {
 	$fallback = array(
-		'allowed' => array( 'morning', 'afternoon', 'midnight', 'evening' ),
-		'default' => 'morning',
-		'light'   => 'morning',
-		'dark'    => 'midnight',
-		'medium'  => 'afternoon',
-		'exotic'  => 'evening',
+		'allowed'   => array( 'morning', 'afternoon', 'evening', 'midnight' ),
+		'default'   => 'morning',
+		'light'     => 'morning',
+		'dark'      => 'midnight',
+		'morning'   => 'morning',
+		'afternoon' => 'afternoon',
+		'evening'   => 'evening',
+		'night'     => 'midnight',
 	);
 
 	if ( ! class_exists( '\ForWP\StyleSwitcher\Style_Registry' ) ) {
@@ -106,15 +110,15 @@ function forwp_ss_playground_resolve_demo_slugs(): array {
 		return '';
 	};
 
-	$light  = $pick( array( 'morning', 'sunrise', 'day' ) );
-	$medium = $pick( array( 'afternoon', 'noon' ) );
-	$dark   = $pick( array( 'midnight', 'night' ) );
-	$exotic = $pick( array( 'evening', 'twilight', 'dusk', 'sunset' ) );
+	$morning   = $pick( array( 'morning', 'sunrise', 'day' ) );
+	$afternoon = $pick( array( 'afternoon', 'noon' ) );
+	$evening   = $pick( array( 'evening', 'twilight', 'dusk', 'sunset' ) );
+	$night     = $pick( array( 'midnight', 'night' ) );
 
 	$core = array_values(
 		array_unique(
 			array_filter(
-				array( $light, $medium, $dark ),
+				array( $morning, $afternoon, $evening, $night ),
 				static function ( string $slug ): bool {
 					return '' !== $slug;
 				}
@@ -122,45 +126,38 @@ function forwp_ss_playground_resolve_demo_slugs(): array {
 		)
 	);
 
-	if ( '' === $exotic ) {
-		foreach ( $color_variations as $variation ) {
-			if ( ! in_array( $variation['slug'], $core, true ) ) {
-				$exotic = $variation['slug'];
-				break;
-			}
-		}
-	}
-
 	if ( count( $core ) < 2 ) {
-		$core = array_slice( array_column( $color_variations, 'slug' ), 0, 3 );
+		$core = array_slice( array_column( $color_variations, 'slug' ), 0, 4 );
 	}
 
 	if ( empty( $core ) ) {
 		return $fallback;
 	}
 
-	if ( '' === $light ) {
-		$light = $core[0];
+	if ( '' === $morning ) {
+		$morning = $core[0];
 	}
-	if ( '' === $dark ) {
-		$dark = $core[ count( $core ) - 1 ];
+	if ( '' === $afternoon ) {
+		$afternoon = $core[1] ?? $morning;
 	}
-	if ( '' === $medium ) {
-		$medium = $core[1] ?? $light;
+	if ( '' === $evening ) {
+		$evening = $core[2] ?? $afternoon;
 	}
-	if ( '' === $exotic ) {
-		$exotic = $dark;
+	if ( '' === $night ) {
+		$night = $core[ count( $core ) - 1 ];
 	}
 
-	$allowed = array_values( array_unique( array_merge( $core, array( $exotic ) ) ) );
+	$allowed = array_values( array_unique( array( $morning, $afternoon, $evening, $night ) ) );
 
 	return array(
-		'allowed' => $allowed,
-		'default' => $light,
-		'light'   => $light,
-		'dark'    => $dark,
-		'medium'  => $medium,
-		'exotic'  => $exotic,
+		'allowed'   => $allowed,
+		'default'   => $morning,
+		'light'     => $morning,
+		'dark'      => $night,
+		'morning'   => $morning,
+		'afternoon' => $afternoon,
+		'evening'   => $evening,
+		'night'     => $night,
 	);
 }
 
@@ -223,57 +220,55 @@ function forwp_ss_playground_variation_title( string $slug ): string {
  * @return array<string, int> Page keys → post IDs.
  */
 function forwp_ss_playground_create_pages( array $slugs ): array {
-	$alternate_title = forwp_ss_playground_variation_title( $slugs['exotic'] );
+	$evening_title = forwp_ss_playground_variation_title( $slugs['evening'] );
+	$night_title   = forwp_ss_playground_variation_title( $slugs['night'] );
 
 	$definitions = array(
 		'about' => array(
 			'title'   => 'About Plugin',
 			'slug'    => 'about-plugin',
-			'style'   => $slugs['light'],
+			'style'   => $slugs['morning'],
 			'locked'  => false,
-			'content' => forwp_ss_playground_about_content( $slugs, $alternate_title ),
+			'content' => forwp_ss_playground_about_content( $slugs, $evening_title, $night_title ),
 		),
 		'morning' => array(
 			'title'   => 'Morning',
 			'slug'    => 'morning',
-			'style'   => $slugs['light'],
+			'style'   => $slugs['morning'],
 			'locked'  => false,
 			'content' => forwp_ss_playground_page_content(
-				'Morning',
-				'Page with the <strong>Morning</strong> style (light variation). Visitors can change the style via the bottom-right switcher or Light/Dark in the menu.'
+				$slugs['morning'],
+				'Visitors can switch styles via the bottom-right switcher or Light/Dark in the menu.'
 			),
 		),
 		'afternoon' => array(
 			'title'   => 'Afternoon',
 			'slug'    => 'afternoon',
-			'style'   => $slugs['medium'],
+			'style'   => $slugs['afternoon'],
+			'locked'  => true,
+			'content' => forwp_ss_playground_page_content(
+				$slugs['afternoon'],
+				'Switching is <strong>locked</strong> on this page — visitors keep the assigned per-page style.'
+			),
+		),
+		'evening' => array(
+			'title'   => 'Evening',
+			'slug'    => 'evening',
+			'style'   => $slugs['evening'],
 			'locked'  => false,
 			'content' => forwp_ss_playground_page_content(
-				'Afternoon',
-				'Page with the <strong>Afternoon</strong> style — a mid-tone palette. Style is set for this page but not locked.'
+				$slugs['evening'],
+				'Visitors can still change styles on this page.'
 			),
 		),
 		'night' => array(
 			'title'   => 'Night',
 			'slug'    => 'night',
-			'style'   => $slugs['dark'],
-			'locked'  => true,
+			'style'   => $slugs['night'],
+			'locked'  => false,
 			'content' => forwp_ss_playground_page_content(
-				'Night',
-				'Dark variation, <strong>locked</strong> for visitors. The switcher on this page will not change the style.'
-			),
-		),
-		'alternate' => array(
-			'title'   => $alternate_title,
-			'slug'    => $slugs['exotic'],
-			'style'   => $slugs['exotic'],
-			'locked'  => true,
-			'content' => forwp_ss_playground_page_content(
-				$alternate_title,
-				sprintf(
-					'This page uses the theme\'s <strong>%1$s</strong> style variation — an alternate preset beyond typical light / mid / dark. The plugin does not edit <code>theme.json</code>; it applies variations the active block theme already provides. Style is <strong>locked</strong> on this page.',
-					esc_html( $alternate_title )
-				)
+				$slugs['night'],
+				'Demo nav label is “Night”; the active preset comes from the theme variation above. Visitors can switch freely.'
 			),
 		),
 	);
@@ -322,9 +317,7 @@ function forwp_ss_playground_create_pages( array $slugs ): array {
 	return $ids;
 }
 
-function forwp_ss_playground_about_content( array $slugs, string $alternate_title ): string {
-	$alternate_slug = sanitize_title( $slugs['exotic'] );
-
+function forwp_ss_playground_about_content( array $slugs, string $evening_title, string $night_title ): string {
 	return '<!-- wp:group {"layout":{"type":"constrained"},"style":{"spacing":{"blockGap":"var:preset|spacing|40","padding":{"top":"var:preset|spacing|50","bottom":"var:preset|spacing|60"}}}} -->
 <div class="wp-block-group" style="padding-top:var(--wp--preset--spacing--50);padding-bottom:var(--wp--preset--spacing--60)">
 
@@ -333,7 +326,7 @@ function forwp_ss_playground_about_content( array $slugs, string $alternate_titl
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"fontSize":"medium"} -->
-<p class="has-medium-font-size">Plugin for <strong>block themes (FSE)</strong>: switch between light, dark, and other <strong>style variations</strong> that ship with the active theme — no extra CSS files, and no editing <code>theme.json</code> from the plugin.</p>
+<p class="has-medium-font-size">Plugin for <strong>block themes (FSE)</strong>: each page can use its own style variation from the active theme — Morning, Afternoon, Evening, Night, and more.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:separator {"className":"is-style-wide"} -->
@@ -345,7 +338,7 @@ function forwp_ss_playground_about_content( array $slugs, string $alternate_titl
 <!-- /wp:heading -->
 
 <!-- wp:list -->
-<ul class="wp-block-list"><li>Light and dark theme for visitors (cookie + switcher)</li><li>Light/Dark toggle in the Navigation menu</li><li>A different style per page</li><li>Lock style on landing / promo pages</li><li>A/B test two variations for new visitors</li></ul>
+<ul class="wp-block-list"><li>Light and dark theme for visitors (cookie + switcher)</li><li>Light/Dark toggle in the Navigation menu</li><li>A dedicated style variation per page</li><li>Lock switching on selected pages (demo: Afternoon)</li><li>A/B test two variations for new visitors</li></ul>
 <!-- /wp:list -->
 
 <!-- wp:spacer {"height":"var:preset|spacing|30"} -->
@@ -357,11 +350,11 @@ function forwp_ss_playground_about_content( array $slugs, string $alternate_titl
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>In FSE, the <strong>theme author</strong> defines the design system and optional presets in <code>theme.json</code> (often as <code>/styles/*.json</code> files). This plugin <strong>uses</strong> those built-in variations — it does not create or maintain them. You help the client choose among real presets (Morning / Afternoon / Night / ' . esc_html( $alternate_title ) . '), not one-off custom CSS.</p>
+<p>The theme author ships presets in <code>theme.json</code> (e.g. Morning, Afternoon, ' . esc_html( $evening_title ) . ', ' . esc_html( $night_title ) . '). This plugin applies them per page — it does not edit theme files.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
-<p>This demo: front page is light; see <a href="/morning/">Morning</a>, <a href="/afternoon/">Afternoon</a>, <a href="/night/">Night</a>, and <a href="/' . esc_attr( $alternate_slug ) . '/">' . esc_html( $alternate_title ) . '</a> (an alternate theme preset). <strong>Night</strong> and <strong>' . esc_html( $alternate_title ) . '</strong> have visitor switching locked.</p>
+<p>This demo assigns one variation per page: <a href="/morning/">Morning</a> → Morning, <a href="/afternoon/">Afternoon</a> → Afternoon (locked), <a href="/evening/">Evening</a> → ' . esc_html( $evening_title ) . ', <a href="/night/">Night</a> → ' . esc_html( $night_title ) . '.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:spacer {"height":"var:preset|spacing|30"} -->
@@ -373,20 +366,26 @@ function forwp_ss_playground_about_content( array $slugs, string $alternate_titl
 <!-- /wp:heading -->
 
 <!-- wp:list -->
-<ul class="wp-block-list"><li>Bottom-right switcher — all allowed variations from the theme</li><li>Sun/moon icon in the header — Light/Dark</li><li>A/B: new visitors without a cookie get light or dark at random</li></ul>
+<ul class="wp-block-list"><li>Bottom-right switcher — allowed theme variations</li><li>Sun/moon icon in the header — Light/Dark (Morning vs ' . esc_html( $night_title ) . ')</li><li>Visit Afternoon — switching is disabled on that page</li></ul>
 <!-- /wp:list -->
 
 </div>
 <!-- /wp:group -->';
 }
 
-function forwp_ss_playground_page_content( string $title, string $intro_html ): string {
+function forwp_ss_playground_page_content( string $variation_slug, string $intro_html ): string {
+	$variation_title = forwp_ss_playground_variation_title( $variation_slug );
+
 	return '<!-- wp:group {"layout":{"type":"constrained"},"style":{"spacing":{"blockGap":"var:preset|spacing|40","padding":{"top":"var:preset|spacing|50","bottom":"var:preset|spacing|60"}}}} -->
 <div class="wp-block-group" style="padding-top:var(--wp--preset--spacing--50);padding-bottom:var(--wp--preset--spacing--60)">
 
 <!-- wp:heading {"level":1} -->
-<h1 class="wp-block-heading">' . esc_html( $title ) . '</h1>
+<h1 class="wp-block-heading">' . esc_html( $variation_title ) . '</h1>
 <!-- /wp:heading -->
+
+<!-- wp:paragraph {"fontSize":"small"} -->
+<p class="has-small-font-size"><code>' . esc_html( $variation_slug ) . '</code> · theme.json style variation</p>
+<!-- /wp:paragraph -->
 
 <!-- wp:paragraph {"fontSize":"medium"} -->
 <p class="has-medium-font-size">' . wp_kses_post( $intro_html ) . '</p>
@@ -400,7 +399,7 @@ function forwp_ss_playground_page_content( string $title, string $intro_html ): 
  * @param array<string, int> $pages Page key → post ID.
  */
 function forwp_ss_playground_create_navigation( array $pages ): int {
-	$links = array( 'about', 'morning', 'afternoon', 'night', 'alternate' );
+	$links = array( 'about', 'morning', 'afternoon', 'evening', 'night' );
 
 	$content = '';
 	foreach ( $links as $key ) {

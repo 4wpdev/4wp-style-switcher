@@ -21,7 +21,12 @@
 		}
 
 		var root = button.closest( '[data-forwp-ss-menu-toggle]' );
-		if ( ! root ) {
+		if ( ! root || root.getAttribute( 'data-forwp-ss-menu-toggle-disabled' ) === 'true' ) {
+			return;
+		}
+
+		if ( button.disabled || button.getAttribute( 'aria-disabled' ) === 'true' ) {
+			event.preventDefault();
 			return;
 		}
 

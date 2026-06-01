@@ -27,17 +27,29 @@ if ( null === $config ) {
 	return;
 }
 
-$active  = Style_Resolver::resolve()['slug'];
-$storage = Settings::instance()->get_visitor_storage_days();
-$light   = $config['light'];
-$dark    = $config['dark'];
-$group_id = wp_unique_id( 'forwp-ss-menu-toggle-' );
+$resolved  = Style_Resolver::resolve();
+$active    = $resolved['slug'];
+$is_locked = $resolved['locked'];
+$storage   = Settings::instance()->get_visitor_storage_days();
+$light     = $config['light'];
+$dark      = $config['dark'];
+$group_id  = wp_unique_id( 'forwp-ss-menu-toggle-' );
 
 $is_light_active = ( $active === $light['slug'] );
 $is_dark_active  = ( $active === $dark['slug'] );
 $matches_pair    = $is_light_active || $is_dark_active;
 
-if ( $is_light_active ) {
+if ( $is_locked ) {
+	$target_slug = '';
+	if ( $is_light_active ) {
+		$state_class = 'forwp-ss-menu-toggle--show-sun';
+	} elseif ( $is_dark_active ) {
+		$state_class = 'forwp-ss-menu-toggle--show-moon';
+	} else {
+		$state_class = 'forwp-ss-menu-toggle--neutral forwp-ss-menu-toggle--show-moon';
+	}
+	$aria_label = __( 'Style switching is disabled on this page', '4wp-style-switcher' );
+} elseif ( $is_light_active ) {
 	$target_slug = $dark['slug'];
 	$state_class = 'forwp-ss-menu-toggle--show-moon';
 	$aria_label  = sprintf(
@@ -67,7 +79,9 @@ if ( ! is_admin() ) {
 	Visitor_Storage::enqueue_assets();
 }
 
-$wrapper_class = trim( 'forwp-ss-menu-toggle ' . $state_class );
+$wrapper_class = trim(
+	'forwp-ss-menu-toggle ' . $state_class . ( $is_locked ? ' forwp-ss-menu-toggle--disabled' : '' )
+);
 
 ?>
 <div
@@ -79,13 +93,22 @@ $wrapper_class = trim( 'forwp-ss-menu-toggle ' . $state_class );
 	data-storage-key="<?php echo esc_attr( Style_Resolver::VISITOR_COOKIE ); ?>"
 	data-cookie-name="<?php echo esc_attr( Style_Resolver::VISITOR_COOKIE ); ?>"
 	data-storage-days="<?php echo esc_attr( (string) $storage ); ?>"
+	<?php if ( $is_locked ) : ?>
+	data-forwp-ss-menu-toggle-disabled="true"
+	<?php endif; ?>
 >
 	<button
 		type="button"
 		class="forwp-ss-menu-toggle__btn"
+		<?php if ( ! $is_locked ) : ?>
 		data-slug="<?php echo esc_attr( $target_slug ); ?>"
+		<?php endif; ?>
 		aria-label="<?php echo esc_attr( $aria_label ); ?>"
 		id="<?php echo esc_attr( $group_id . '-toggle' ); ?>"
+		<?php if ( $is_locked ) : ?>
+		disabled
+		aria-disabled="true"
+		<?php endif; ?>
 	>
 		<span class="forwp-ss-menu-toggle__icon forwp-ss-menu-toggle__icon--sun" aria-hidden="true">
 			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" focusable="false">
