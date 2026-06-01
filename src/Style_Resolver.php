@@ -12,7 +12,7 @@ use ForWP\StyleSwitcher\Admin\Settings;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Priority: locked page style > visitor cookie > page default > site default.
+ * Priority: locked page style > visitor preference > per-page style > site default.
  */
 final class Style_Resolver {
 
@@ -46,16 +46,16 @@ final class Style_Resolver {
 		$slug   = '';
 		$source = 'default';
 
-		if ( $locked && '' !== $page_style && self::is_valid_slug( $page_style ) ) {
+		if ( $locked && '' !== $page_style && self::is_theme_variation_slug( $page_style ) ) {
 			$slug   = $page_style;
 			$source = 'page_locked';
-		} elseif ( '' !== $visitor_style && self::is_valid_slug( $visitor_style ) ) {
+		} elseif ( '' !== $visitor_style && self::is_allowed_slug( $visitor_style ) ) {
 			$slug   = $visitor_style;
 			$source = 'visitor';
-		} elseif ( '' !== $page_style && self::is_valid_slug( $page_style ) ) {
+		} elseif ( '' !== $page_style && self::is_theme_variation_slug( $page_style ) ) {
 			$slug   = $page_style;
 			$source = 'page';
-		} elseif ( '' !== $site_default && self::is_valid_slug( $site_default ) ) {
+		} elseif ( '' !== $site_default && self::is_allowed_slug( $site_default ) ) {
 			$slug   = $site_default;
 			$source = 'site_default';
 		}
@@ -82,7 +82,7 @@ final class Style_Resolver {
 		if ( ! is_admin() && ! empty( $_GET[ self::VISITOR_COOKIE ] ) ) {
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$query_slug = sanitize_title( wp_unslash( (string) $_GET[ self::VISITOR_COOKIE ] ) );
-			if ( '' !== $query_slug && self::is_valid_slug( $query_slug ) ) {
+			if ( '' !== $query_slug && Style_Resolver::is_allowed_slug( $query_slug ) ) {
 				return $query_slug;
 			}
 		}
@@ -94,9 +94,23 @@ final class Style_Resolver {
 	}
 
 	/**
-	 * Whether slug exists in the active theme registry.
+	 * Whether slug exists in the active theme (any variation).
+	 */
+	public static function is_theme_variation_slug( string $slug ): bool {
+		return null !== Style_Registry::get_variation_raw( $slug );
+	}
+
+	/**
+	 * Whether slug is allowed for visitor switching / site default.
+	 */
+	public static function is_allowed_slug( string $slug ): bool {
+		return null !== Style_Registry::get_variation( $slug );
+	}
+
+	/**
+	 * @deprecated Use is_theme_variation_slug() or is_allowed_slug().
 	 */
 	public static function is_valid_slug( string $slug ): bool {
-		return null !== Style_Registry::get_variation( $slug );
+		return self::is_allowed_slug( $slug );
 	}
 }

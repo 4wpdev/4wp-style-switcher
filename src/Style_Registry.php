@@ -129,8 +129,8 @@ final class Style_Registry {
 	 * Raw theme variations from core, deduplicated by slug.
 	 *
 	 * WordPress scans /styles/ recursively, so themes like Twenty Twenty-Five
-	 * expose the same slug twice (e.g. styles/01-evening.json and styles/colors/01-evening.json).
-	 * Core sorts paths with ksort(), so root-level files win when we keep the first slug.
+	 * expose the same slug twice (e.g. styles/04-afternoon.json and styles/colors/04-afternoon.json).
+	 * When duplicates exist, keep the richest variation (full preset over color partial).
 	 *
 	 * @return array<int, array<string, mixed>>
 	 */
@@ -143,8 +143,7 @@ final class Style_Registry {
 	 * @return array<int, array<string, mixed>>
 	 */
 	private static function dedupe_variations_by_slug( array $variations ): array {
-		$seen = array();
-		$out  = array();
+		$by_slug = array();
 
 		foreach ( $variations as $variation ) {
 			if ( ! is_array( $variation ) ) {
@@ -152,15 +151,35 @@ final class Style_Registry {
 			}
 
 			$slug = self::variation_slug( $variation );
-			if ( '' === $slug || isset( $seen[ $slug ] ) ) {
+			if ( '' === $slug ) {
 				continue;
 			}
 
-			$seen[ $slug ] = true;
-			$out[]         = $variation;
+			if ( ! isset( $by_slug[ $slug ] ) || self::variation_weight( $variation ) > self::variation_weight( $by_slug[ $slug ] ) ) {
+				$by_slug[ $slug ] = $variation;
+			}
 		}
 
-		return $out;
+		return array_values( $by_slug );
+	}
+
+	/**
+	 * Prefer full /styles/*.json variations over /styles/colors/* partials.
+	 *
+	 * @param array<string, mixed> $variation Raw variation from core.
+	 */
+	private static function variation_weight( array $variation ): int {
+		$weight = strlen( wp_json_encode( $variation ) );
+
+		if ( ! empty( $variation['styles'] ) ) {
+			$weight += 1000;
+		}
+
+		if ( ! empty( $variation['settings']['typography']['fontFamilies'] ) ) {
+			$weight += 500;
+		}
+
+		return $weight;
 	}
 
 	/**

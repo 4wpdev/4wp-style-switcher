@@ -37,7 +37,7 @@ final class Visitor_Storage {
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$slug = sanitize_title( wp_unslash( (string) $_GET[ Style_Resolver::VISITOR_COOKIE ] ) );
-		if ( '' === $slug || ! Style_Resolver::is_valid_slug( $slug ) ) {
+		if ( '' === $slug || ! Style_Resolver::is_allowed_slug( $slug ) ) {
 			return;
 		}
 

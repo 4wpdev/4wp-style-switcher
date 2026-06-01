@@ -40,6 +40,7 @@ function forwp_ss_playground_setup(): void {
 	forwp_ss_playground_configure_site();
 
 	$pages = forwp_ss_playground_create_pages( $slugs );
+	forwp_ss_playground_remove_retired_pages();
 	$nav_id = forwp_ss_playground_create_navigation( $pages );
 
 	forwp_ss_playground_apply_template_parts( $nav_id );
@@ -53,8 +54,7 @@ function forwp_ss_playground_setup(): void {
  *   dark: string,
  *   morning: string,
  *   afternoon: string,
- *   evening: string,
- *   night: string
+ *   evening: string
  * }
  */
 function forwp_ss_playground_resolve_demo_slugs(): array {
@@ -66,7 +66,6 @@ function forwp_ss_playground_resolve_demo_slugs(): array {
 		'morning'   => 'morning',
 		'afternoon' => 'afternoon',
 		'evening'   => 'evening',
-		'night'     => 'midnight',
 	);
 
 	if ( ! class_exists( '\ForWP\StyleSwitcher\Style_Registry' ) ) {
@@ -128,12 +127,12 @@ function forwp_ss_playground_resolve_demo_slugs(): array {
 	$morning   = $find( 'morning' ) ?: $pick( array( 'morning', 'sunrise' ) );
 	$afternoon = $find( 'afternoon' ) ?: $pick( array( 'afternoon' ) );
 	$evening   = $find( 'evening' ) ?: $pick( array( 'evening', 'twilight', 'dusk', 'sunset' ) );
-	$night     = $find( 'midnight' ) ?: $find( 'night' ) ?: $pick( array( 'midnight', 'night' ) );
+	$dark      = $find( 'midnight' ) ?: $find( 'night' ) ?: $pick( array( 'midnight', 'night' ) );
 
 	$core = array_values(
 		array_unique(
 			array_filter(
-				array( $morning, $afternoon, $evening, $night ),
+				array( $morning, $afternoon, $evening, $dark ),
 				static function ( string $slug ): bool {
 					return '' !== $slug;
 				}
@@ -158,8 +157,8 @@ function forwp_ss_playground_resolve_demo_slugs(): array {
 	if ( '' === $evening ) {
 		$evening = $core[2] ?? $afternoon;
 	}
-	if ( '' === $night ) {
-		$night = $core[ count( $core ) - 1 ];
+	if ( '' === $dark ) {
+		$dark = $core[ count( $core ) - 1 ];
 	}
 
 	// Avoid demo pages sharing one slug (e.g. fuzzy keyword match).
@@ -170,17 +169,16 @@ function forwp_ss_playground_resolve_demo_slugs(): array {
 		$afternoon = $pick( array( 'noon' ) );
 	}
 
-	$allowed = array_values( array_unique( array_filter( array( $morning, $afternoon, $evening, $night ) ) ) );
+	$allowed = array_values( array_unique( array_filter( array( $morning, $afternoon, $evening, $dark ) ) ) );
 
 	return array(
 		'allowed'   => $allowed,
 		'default'   => $morning,
 		'light'     => $morning,
-		'dark'      => $night,
+		'dark'      => $dark,
 		'morning'   => $morning,
 		'afternoon' => $afternoon,
 		'evening'   => $evening,
-		'night'     => $night,
 	);
 }
 
@@ -244,7 +242,7 @@ function forwp_ss_playground_variation_title( string $slug ): string {
  */
 function forwp_ss_playground_create_pages( array $slugs ): array {
 	$evening_title = forwp_ss_playground_variation_title( $slugs['evening'] );
-	$night_title   = forwp_ss_playground_variation_title( $slugs['night'] );
+	$dark_title    = forwp_ss_playground_variation_title( $slugs['dark'] );
 
 	$definitions = array(
 		'about' => array(
@@ -253,7 +251,7 @@ function forwp_ss_playground_create_pages( array $slugs ): array {
 			'slug'    => 'about-plugin',
 			'style'   => $slugs['morning'],
 			'locked'  => false,
-			'content' => forwp_ss_playground_about_content( $slugs, $evening_title, $night_title ),
+			'content' => forwp_ss_playground_about_content( $slugs, $evening_title, $dark_title ),
 		),
 		'morning' => array(
 			'nav_label' => 'Morning',
@@ -285,18 +283,7 @@ function forwp_ss_playground_create_pages( array $slugs ): array {
 			'locked'  => false,
 			'content' => forwp_ss_playground_page_content(
 				$slugs['evening'],
-				'Visitors can still change styles on this page.'
-			),
-		),
-		'night' => array(
-			'nav_label' => 'Night',
-			'title'   => forwp_ss_playground_variation_title( $slugs['night'] ),
-			'slug'    => 'night',
-			'style'   => $slugs['night'],
-			'locked'  => false,
-			'content' => forwp_ss_playground_page_content(
-				$slugs['night'],
-				'Demo nav label is “Night”; the preset above is the theme.json variation applied to this page. Visitors can switch freely.'
+				'Visitors can switch styles via the bottom-right switcher or Light/Dark in the menu.'
 			),
 		),
 	);
@@ -345,7 +332,19 @@ function forwp_ss_playground_create_pages( array $slugs ): array {
 	return $ids;
 }
 
-function forwp_ss_playground_about_content( array $slugs, string $evening_title, string $night_title ): string {
+/**
+ * Remove demo pages dropped from the Playground blueprint.
+ */
+function forwp_ss_playground_remove_retired_pages(): void {
+	foreach ( array( 'night' ) as $slug ) {
+		$page = get_page_by_path( $slug, OBJECT, 'page' );
+		if ( $page instanceof WP_Post ) {
+			wp_trash_post( $page->ID );
+		}
+	}
+}
+
+function forwp_ss_playground_about_content( array $slugs, string $evening_title, string $dark_title ): string {
 	return '<!-- wp:group {"layout":{"type":"constrained"},"style":{"spacing":{"blockGap":"var:preset|spacing|40","padding":{"top":"var:preset|spacing|50","bottom":"var:preset|spacing|60"}}}} -->
 <div class="wp-block-group" style="padding-top:var(--wp--preset--spacing--50);padding-bottom:var(--wp--preset--spacing--60)">
 
@@ -354,7 +353,7 @@ function forwp_ss_playground_about_content( array $slugs, string $evening_title,
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"fontSize":"medium"} -->
-<p class="has-medium-font-size">Plugin for <strong>block themes (FSE)</strong>: each page can use its own style variation from the active theme — Morning, Afternoon, Evening, Night, and more.</p>
+<p class="has-medium-font-size">Plugin for <strong>block themes (FSE)</strong>: each page can use its own style variation from the active theme — Morning, Afternoon, Evening, and more.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:separator {"className":"is-style-wide"} -->
@@ -378,11 +377,11 @@ function forwp_ss_playground_about_content( array $slugs, string $evening_title,
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>The theme author ships presets in <code>theme.json</code> (e.g. Morning, Afternoon, ' . esc_html( $evening_title ) . ', ' . esc_html( $night_title ) . '). This plugin applies them per page — it does not edit theme files.</p>
+<p>The theme author ships presets in <code>theme.json</code> (e.g. Morning, Afternoon, ' . esc_html( $evening_title ) . '). This plugin applies them per page — it does not edit theme files.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
-<p>This demo assigns one variation per page: <a href="/morning/">Morning</a> → Morning, <a href="/afternoon/">Afternoon</a> → Afternoon (locked), <a href="/evening/">Evening</a> → ' . esc_html( $evening_title ) . ', <a href="/night/">Night</a> → ' . esc_html( $night_title ) . '.</p>
+<p>This demo assigns one variation per page: <a href="/morning/">Morning</a>, <a href="/afternoon/">Afternoon</a> (locked), and <a href="/evening/">Evening</a> (' . esc_html( $evening_title ) . ', switching allowed).</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:spacer {"height":"var:preset|spacing|30"} -->
@@ -394,7 +393,7 @@ function forwp_ss_playground_about_content( array $slugs, string $evening_title,
 <!-- /wp:heading -->
 
 <!-- wp:list -->
-<ul class="wp-block-list"><li>Bottom-right switcher — allowed theme variations</li><li>Sun/moon icon in the header — Light/Dark (Morning vs ' . esc_html( $night_title ) . ')</li><li>Visit Afternoon — switching is disabled on that page</li></ul>
+<ul class="wp-block-list"><li>Bottom-right switcher — allowed theme variations</li><li>Sun/moon icon in the header — Light/Dark (Morning vs ' . esc_html( $dark_title ) . ')</li><li>Visit Afternoon — switching is disabled; Evening — switching works</li></ul>
 <!-- /wp:list -->
 
 </div>
@@ -421,14 +420,13 @@ function forwp_ss_playground_page_content( string $variation_slug, string $intro
  * @param array<string, int> $pages Page key → post ID.
  */
 function forwp_ss_playground_create_navigation( array $pages ): int {
-	$links = array( 'about', 'morning', 'afternoon', 'evening', 'night' );
+	$links = array( 'about', 'morning', 'afternoon', 'evening' );
 
 	$nav_labels = array(
 		'about'     => 'About Plugin',
 		'morning'   => 'Morning',
 		'afternoon' => 'Afternoon',
 		'evening'   => 'Evening',
-		'night'     => 'Night',
 	);
 
 	$content = '';
