@@ -100,10 +100,10 @@ final class Settings {
 		$existing = is_array( $existing ) ? $existing : array();
 
 		if ( array_key_exists( 'allowed_variations', $settings ) ) {
-			$allowed = self::sanitize_allowed_slugs( $settings['allowed_variations'] );
+			$allowed                      = self::sanitize_allowed_slugs( $settings['allowed_variations'] );
 			$merged['allowed_variations'] = empty( $allowed ) ? null : $allowed;
 		} elseif ( array_key_exists( 'allowed_variations', $existing ) ) {
-			$existing_allowed = is_array( $existing['allowed_variations'] )
+			$existing_allowed             = is_array( $existing['allowed_variations'] )
 				? $existing['allowed_variations']
 				: array();
 			$merged['allowed_variations'] = empty( $existing_allowed ) ? null : $existing_allowed;

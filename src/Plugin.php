@@ -44,8 +44,6 @@ final class Plugin {
 	 * Boot hooks.
 	 */
 	public function boot(): void {
-		add_action( 'init', array( $this, 'load_textdomain' ) );
-
 		Page_Style_Meta::boot();
 		Block_Theme_Guard::boot_admin_notice();
 		Light_Dark_Menu_Block::boot();
@@ -56,16 +54,5 @@ final class Plugin {
 		Style_Applicator::boot();
 		Visitor_Switcher::boot();
 		Rest_Settings::register();
-	}
-
-	/**
-	 * Load translations.
-	 */
-	public function load_textdomain(): void {
-		load_plugin_textdomain(
-			'4wp-style-switcher',
-			false,
-			dirname( plugin_basename( FORWP_STYLE_SWITCHER_FILE ) ) . '/languages'
-		);
 	}
 }

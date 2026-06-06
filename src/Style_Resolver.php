@@ -82,12 +82,12 @@ final class Style_Resolver {
 			&& ! empty( Style_Registry::get_variations() );
 
 		self::$resolve_cache[ $post_id ] = array(
-			'slug'           => $slug,
-			'source'         => $source,
-			'locked'         => $locked,
-			'show_switcher'  => $show_switcher,
-			'page_style'     => $page_style,
-			'visitor_style'  => $visitor_style,
+			'slug'          => $slug,
+			'source'        => $source,
+			'locked'        => $locked,
+			'show_switcher' => $show_switcher,
+			'page_style'    => $page_style,
+			'visitor_style' => $visitor_style,
 		);
 
 		return self::$resolve_cache[ $post_id ];
@@ -109,6 +109,7 @@ final class Style_Resolver {
 	 * Style from ?forwp_ss_style= on the current request (explicit switch).
 	 */
 	public static function read_query_style(): string {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Public visitor style preference; slug is sanitized below.
 		if ( is_admin() || empty( $_GET[ self::VISITOR_COOKIE ] ) ) {
 			return '';
 		}

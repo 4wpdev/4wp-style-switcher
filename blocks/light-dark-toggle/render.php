@@ -15,9 +15,9 @@ use ForWP\StyleSwitcher\Style_Resolver;
 
 defined( 'ABSPATH' ) || exit;
 
-$config = Settings::instance()->get_light_dark_config();
+$forwp_ss_config = Settings::instance()->get_light_dark_config();
 
-if ( null === $config ) {
+if ( null === $forwp_ss_config ) {
 	if ( is_admin() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) ) {
 		echo '<div class="forwp-ss-menu-toggle forwp-ss-menu-toggle--placeholder wp-block-forwp-style-switcher-light-dark-toggle">';
 		esc_html_e( 'Configure Light / Dark variations under Settings → 4WP Style Switcher.', '4wp-style-switcher' );
@@ -27,51 +27,50 @@ if ( null === $config ) {
 	return;
 }
 
-$resolved  = Style_Resolver::resolve();
-$active    = $resolved['slug'];
-$is_locked = $resolved['locked'];
-$storage   = Settings::instance()->get_visitor_storage_days();
-$light     = $config['light'];
-$dark      = $config['dark'];
-$group_id  = wp_unique_id( 'forwp-ss-menu-toggle-' );
+$forwp_ss_resolved  = Style_Resolver::resolve();
+$forwp_ss_active    = $forwp_ss_resolved['slug'];
+$forwp_ss_is_locked = $forwp_ss_resolved['locked'];
+$forwp_ss_storage   = Settings::instance()->get_visitor_storage_days();
+$forwp_ss_light     = $forwp_ss_config['light'];
+$forwp_ss_dark      = $forwp_ss_config['dark'];
+$forwp_ss_group_id  = wp_unique_id( 'forwp-ss-menu-toggle-' );
 
-$is_light_active = ( $active === $light['slug'] );
-$is_dark_active  = ( $active === $dark['slug'] );
-$matches_pair    = $is_light_active || $is_dark_active;
+$forwp_ss_is_light_active = ( $forwp_ss_active === $forwp_ss_light['slug'] );
+$forwp_ss_is_dark_active  = ( $forwp_ss_active === $forwp_ss_dark['slug'] );
 
-if ( $is_locked ) {
-	$target_slug = '';
-	if ( $is_light_active ) {
-		$state_class = 'forwp-ss-menu-toggle--show-sun';
-	} elseif ( $is_dark_active ) {
-		$state_class = 'forwp-ss-menu-toggle--show-moon';
+if ( $forwp_ss_is_locked ) {
+	$forwp_ss_target_slug = '';
+	if ( $forwp_ss_is_light_active ) {
+		$forwp_ss_state_class = 'forwp-ss-menu-toggle--show-sun';
+	} elseif ( $forwp_ss_is_dark_active ) {
+		$forwp_ss_state_class = 'forwp-ss-menu-toggle--show-moon';
 	} else {
-		$state_class = 'forwp-ss-menu-toggle--neutral forwp-ss-menu-toggle--show-moon';
+		$forwp_ss_state_class = 'forwp-ss-menu-toggle--neutral forwp-ss-menu-toggle--show-moon';
 	}
-	$aria_label = __( 'Style switching is disabled on this page', '4wp-style-switcher' );
-} elseif ( $is_light_active ) {
-	$target_slug = $dark['slug'];
-	$state_class = 'forwp-ss-menu-toggle--show-moon';
-	$aria_label  = sprintf(
+	$forwp_ss_aria_label = __( 'Style switching is disabled on this page', '4wp-style-switcher' );
+} elseif ( $forwp_ss_is_light_active ) {
+	$forwp_ss_target_slug  = $forwp_ss_dark['slug'];
+	$forwp_ss_state_class  = 'forwp-ss-menu-toggle--show-moon';
+	$forwp_ss_aria_label   = sprintf(
 		/* translators: %s: style variation title */
 		__( 'Switch to dark: %s', '4wp-style-switcher' ),
-		$dark['title']
+		$forwp_ss_dark['title']
 	);
-} elseif ( $is_dark_active ) {
-	$target_slug = $light['slug'];
-	$state_class = 'forwp-ss-menu-toggle--show-sun';
-	$aria_label  = sprintf(
+} elseif ( $forwp_ss_is_dark_active ) {
+	$forwp_ss_target_slug = $forwp_ss_light['slug'];
+	$forwp_ss_state_class = 'forwp-ss-menu-toggle--show-sun';
+	$forwp_ss_aria_label  = sprintf(
 		/* translators: %s: style variation title */
 		__( 'Switch to light: %s', '4wp-style-switcher' ),
-		$light['title']
+		$forwp_ss_light['title']
 	);
 } else {
-	$target_slug = $dark['slug'];
-	$state_class = 'forwp-ss-menu-toggle--neutral forwp-ss-menu-toggle--show-moon';
-	$aria_label  = sprintf(
+	$forwp_ss_target_slug = $forwp_ss_dark['slug'];
+	$forwp_ss_state_class = 'forwp-ss-menu-toggle--neutral forwp-ss-menu-toggle--show-moon';
+	$forwp_ss_aria_label  = sprintf(
 		/* translators: %s: style variation title */
 		__( 'Switch to dark: %s', '4wp-style-switcher' ),
-		$dark['title']
+		$forwp_ss_dark['title']
 	);
 }
 
@@ -79,33 +78,33 @@ if ( ! is_admin() ) {
 	Visitor_Storage::enqueue_assets();
 }
 
-$wrapper_class = trim(
-	'forwp-ss-menu-toggle ' . $state_class . ( $is_locked ? ' forwp-ss-menu-toggle--disabled' : '' )
+$forwp_ss_wrapper_class = trim(
+	'forwp-ss-menu-toggle ' . $forwp_ss_state_class . ( $forwp_ss_is_locked ? ' forwp-ss-menu-toggle--disabled' : '' )
 );
 
 ?>
 <div
-	<?php echo get_block_wrapper_attributes( array( 'class' => $wrapper_class ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+	<?php echo get_block_wrapper_attributes( array( 'class' => $forwp_ss_wrapper_class ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 	data-forwp-ss-menu-toggle="true"
-	data-light-slug="<?php echo esc_attr( $light['slug'] ); ?>"
-	data-dark-slug="<?php echo esc_attr( $dark['slug'] ); ?>"
-	data-active-slug="<?php echo esc_attr( $active ); ?>"
+	data-light-slug="<?php echo esc_attr( $forwp_ss_light['slug'] ); ?>"
+	data-dark-slug="<?php echo esc_attr( $forwp_ss_dark['slug'] ); ?>"
+	data-active-slug="<?php echo esc_attr( $forwp_ss_active ); ?>"
 	data-storage-key="<?php echo esc_attr( Style_Resolver::VISITOR_COOKIE ); ?>"
 	data-cookie-name="<?php echo esc_attr( Style_Resolver::VISITOR_COOKIE ); ?>"
-	data-storage-days="<?php echo esc_attr( (string) $storage ); ?>"
-	<?php if ( $is_locked ) : ?>
+	data-storage-days="<?php echo esc_attr( (string) $forwp_ss_storage ); ?>"
+	<?php if ( $forwp_ss_is_locked ) : ?>
 	data-forwp-ss-menu-toggle-disabled="true"
 	<?php endif; ?>
 >
 	<button
 		type="button"
 		class="forwp-ss-menu-toggle__btn"
-		<?php if ( ! $is_locked ) : ?>
-		data-slug="<?php echo esc_attr( $target_slug ); ?>"
+		<?php if ( ! $forwp_ss_is_locked ) : ?>
+		data-slug="<?php echo esc_attr( $forwp_ss_target_slug ); ?>"
 		<?php endif; ?>
-		aria-label="<?php echo esc_attr( $aria_label ); ?>"
-		id="<?php echo esc_attr( $group_id . '-toggle' ); ?>"
-		<?php if ( $is_locked ) : ?>
+		aria-label="<?php echo esc_attr( $forwp_ss_aria_label ); ?>"
+		id="<?php echo esc_attr( $forwp_ss_group_id . '-toggle' ); ?>"
+		<?php if ( $forwp_ss_is_locked ) : ?>
 		disabled
 		aria-disabled="true"
 		<?php endif; ?>

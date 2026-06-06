@@ -113,7 +113,7 @@ final class Ab_Testing {
 	/**
 	 * Balance cohorts toward the configured split using aggregate counters.
 	 *
-	 * @param int                  $split_a Target percentage for cohort A (0–100).
+	 * @param int                   $split_a Target percentage for cohort A (0–100).
 	 * @param array{a: int, b: int} $counts  Existing assignment totals.
 	 * @return 'a'|'b'
 	 */

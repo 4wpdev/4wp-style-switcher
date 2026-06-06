@@ -1,8 +1,8 @@
-=== 4WP Theme Style Switcher ===
+=== 4WP Style Switcher ===
 Contributors: 4wpdev
 Tags: full-site-editing, theme.json, dark mode, style variations, block-theme
 Requires at least: 6.4
-Tested up to: 6.8
+Tested up to: 7.0
 Requires PHP: 7.4
 Stable tag: 0.2.5
 License: GPLv2 or later
@@ -12,7 +12,15 @@ Apply theme.json style variations per page or let visitors switch styles on the 
 
 == Description ==
 
-4WP Theme Style Switcher reads **style variations** from the active block theme (`theme.json` and `/styles/*.json`).
+4WP Style Switcher reads **style variations** from the active block theme (`theme.json` and `/styles/*.json`).
+
+A plugin by [4wp.dev](https://4wp.dev/). **4WP** is our project brand; the letters "WP" appear only as part of that brand name, not as a reference to WordPress. This plugin is not affiliated with, endorsed, or sponsored by WordPress.
+
+Source code and releases: [github.com/4wpdev/4wp-style-switcher](https://github.com/4wpdev/4wp-style-switcher)
+
+= Development =
+
+Human-readable PHP source is in the public GitHub repository above. The plugin ZIP includes `src/` (PSR-4 autoload via `src/Autoload.php` when `vendor/` is absent). No npm build step — front-end scripts ship as plain JS in `assets/`.
 
 **Live demo (WordPress Playground):** https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/4wpdev/4wp-style-switcher/v0.2.5/.wordpress-org/assets/blueprints/blueprint.json
 
@@ -25,6 +33,16 @@ The demo site **Style Switcher** uses Twenty Twenty-Five: About, Morning, Aftern
 **Light / Dark (navigation block)** — add the Light/Dark block inside Navigation; map two variations (sun/moon icons).
 
 **A/B testing** — split new visitors between two variations; daily aggregate stats monitor the traffic split.
+
+= Privacy =
+
+When the visitor switcher or A/B testing is enabled, the plugin may store the selected style variation in a browser cookie (`forwp_ss_style`) and in localStorage on the visitor device. No personal data is sent to third-party services. A/B stats are aggregated counts stored in your WordPress database.
+
+== Blocks ==
+
+This plugin provides 1 block.
+
+* **Light / Dark** — menu toggle between two mapped theme style variations (sun/moon icons).
 
 == Installation ==
 

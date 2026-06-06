@@ -1,6 +1,9 @@
 .git/
 .gitignore
 .github/
+.distignore
+.phpcs.xml
+phpcs.xml
 .wordpress-org/
 playground/
 README.md

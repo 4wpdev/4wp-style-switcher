@@ -20,13 +20,14 @@ final class Visitor_Storage {
 	public static function boot(): void {
 		add_action( 'init', array( self::class, 'handle_query_switch' ), 0 );
 		add_action( 'wp_enqueue_scripts', array( self::class, 'register_assets' ), 5 );
-		add_action( 'wp_head', array( self::class, 'print_head_sync' ), 0 );
+		add_action( 'wp_enqueue_scripts', array( self::class, 'enqueue_head_sync' ), 0 );
 	}
 
 	/**
 	 * Apply style from ?forwp_ss_style= query (works without JS inside Navigation).
 	 */
 	public static function handle_query_switch(): void {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Public visitor style preference; slug is sanitized below.
 		if ( is_admin() || empty( $_GET[ Style_Resolver::VISITOR_COOKIE ] ) ) {
 			return;
 		}
@@ -59,7 +60,9 @@ final class Visitor_Storage {
 	 * Current URL without the style query argument.
 	 */
 	private static function get_redirect_url_after_switch(): string {
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( $_SERVER['REQUEST_URI'] ) : '/';
+		$request_uri = sanitize_text_field( $request_uri );
 		$path        = wp_parse_url( $request_uri, PHP_URL_PATH );
 		$query       = wp_parse_url( $request_uri, PHP_URL_QUERY );
 		$args        = array();
@@ -96,11 +99,36 @@ final class Visitor_Storage {
 		}
 
 		wp_register_script(
+			'forwp-ss-visitor-storage-head',
+			FORWP_STYLE_SWITCHER_URL . 'assets/visitor-storage-head-sync.js',
+			array(),
+			FORWP_STYLE_SWITCHER_VERSION,
+			false
+		);
+
+		wp_register_script(
 			'forwp-ss-visitor-storage',
 			FORWP_STYLE_SWITCHER_URL . 'assets/visitor-storage.js',
 			array(),
 			FORWP_STYLE_SWITCHER_VERSION,
 			true
+		);
+	}
+
+	/**
+	 * Early head sync so server-side style matches localStorage before paint.
+	 */
+	public static function enqueue_head_sync(): void {
+		if ( is_admin() ) {
+			return;
+		}
+
+		self::register_assets();
+		wp_enqueue_script( 'forwp-ss-visitor-storage-head' );
+		wp_add_inline_script(
+			'forwp-ss-visitor-storage-head',
+			'window.forwpSsVisitorStorageConfig = ' . wp_json_encode( self::get_client_config() ) . ';',
+			'before'
 		);
 	}
 
@@ -121,22 +149,6 @@ final class Visitor_Storage {
 			'storageKey'  => Style_Resolver::VISITOR_COOKIE,
 			'cookieName'  => Style_Resolver::VISITOR_COOKIE,
 			'storageDays' => Settings::instance()->get_visitor_storage_days(),
-		);
-	}
-
-	public static function print_head_sync(): void {
-		if ( is_admin() ) {
-			return;
-		}
-
-		$config = wp_json_encode( self::get_client_config() );
-		if ( ! $config ) {
-			return;
-		}
-
-		printf(
-			'<script>(function(c){if(!c||!window.localStorage)return;try{var key=c.storageKey||c.cookieName,name=c.cookieName||key,days=parseInt(c.storageDays,10)||365,expiresAt=Date.now()+days*86400000,secure=window.location.protocol==="https:"?"; Secure":"",match=document.cookie.match(new RegExp("(?:^|; )"+name.replace(/([.$?*|{}()\\[\\]\\\\/+^])/g,"\\\\$1")+"=([^;]*)")),cookieSlug=match?decodeURIComponent(match[1]):"",raw=localStorage.getItem(key),lsData=raw?JSON.parse(raw):null,lsSlug="";if(lsData&&lsData.slug){if(!lsData.expires||Date.now()<=lsData.expires){lsSlug=lsData.slug;}else{localStorage.removeItem(key);}}if(cookieSlug){if(cookieSlug!==lsSlug){localStorage.setItem(key,JSON.stringify({slug:cookieSlug,expires:expiresAt}));}return;}if(lsSlug){document.cookie=name+"="+encodeURIComponent(lsSlug)+"; path=/; SameSite=Lax"+secure;}catch(e){}})(%s);</script>' . "\n",
-			$config
 		);
 	}
 }

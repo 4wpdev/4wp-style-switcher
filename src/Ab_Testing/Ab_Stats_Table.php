@@ -77,7 +77,7 @@ final class Ab_Stats_Table {
 		$table  = self::table_name();
 		$date   = gmdate( 'Y-m-d' );
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name from $wpdb->prefix + fixed suffix.
 		$wpdb->query(
 			$wpdb->prepare(
 				"INSERT INTO {$table} (stat_date, cohort, assignments) VALUES (%s, %s, 1)

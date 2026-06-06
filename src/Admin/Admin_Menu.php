@@ -81,18 +81,18 @@ final class Admin_Menu {
 			'forwp-ss-admin',
 			'forwpStyleSwitcherAdmin',
 			array(
-				'restUrl'          => rest_url( 'forwp-style-switcher/v1/' ),
-				'nonce'            => wp_create_nonce( 'wp_rest' ),
-				'bootstrap'        => array(
+				'restUrl'   => rest_url( 'forwp-style-switcher/v1/' ),
+				'nonce'     => wp_create_nonce( 'wp_rest' ),
+				'bootstrap' => array(
 					'settings'         => Settings::instance()->all(),
 					'theme_variations' => Style_Registry::get_theme_variations(),
 					'ab_testing'       => Ab_Testing::get_config(),
 				),
-				'strings'          => array(
-					'saved'         => __( 'Settings saved.', '4wp-style-switcher' ),
-					'error'         => __( 'Could not save settings.', '4wp-style-switcher' ),
-					'saving'        => __( 'Saving…', '4wp-style-switcher' ),
-					'noVariations'  => __( 'No style variations found in the active theme.', '4wp-style-switcher' ),
+				'strings'   => array(
+					'saved'        => __( 'Settings saved.', '4wp-style-switcher' ),
+					'error'        => __( 'Could not save settings.', '4wp-style-switcher' ),
+					'saving'       => __( 'Saving…', '4wp-style-switcher' ),
+					'noVariations' => __( 'No style variations found in the active theme.', '4wp-style-switcher' ),
 				),
 			)
 		);

@@ -88,7 +88,7 @@ final class Analytics {
 
 	/**
 	 * @param array{cohort: string, slug: string} $result Assignment.
-	 * @param array<string, mixed>              $config A/B settings.
+	 * @param array<string, mixed>                $config A/B settings.
 	 */
 	public static function on_ab_assigned( array $result, array $config ): void {
 		self::track(

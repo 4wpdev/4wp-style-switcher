@@ -9,23 +9,23 @@ use ForWP\StyleSwitcher\Block_Theme_Guard;
 
 defined( 'ABSPATH' ) || exit;
 
-$heading_svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" fill="none" focusable="false" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.75"/><path d="M12 3.5v17M3.5 12h17" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>';
+$forwp_ss_heading_svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" fill="none" focusable="false" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.75"/><path d="M12 3.5v17M3.5 12h17" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>';
 ?>
 <div class="wrap forwp-ss-admin-shell">
 	<h1 class="forwp-ss-admin-heading">
 		<span class="forwp-ss-admin-heading__icon" aria-hidden="true">
 			<?php
 			echo wp_kses(
-				$heading_svg,
+				$forwp_ss_heading_svg,
 				array(
 					'svg'    => array(
-						'xmlns'        => true,
-						'viewbox'      => true,
-						'width'        => true,
-						'height'       => true,
-						'fill'         => true,
-						'focusable'    => true,
-						'aria-hidden'  => true,
+						'xmlns'       => true,
+						'viewbox'     => true,
+						'width'       => true,
+						'height'      => true,
+						'fill'        => true,
+						'focusable'   => true,
+						'aria-hidden' => true,
 					),
 					'circle' => array(
 						'cx'           => true,

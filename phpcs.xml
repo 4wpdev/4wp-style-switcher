@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<ruleset name="4WP Style Switcher">
+	<description>PHPCS for 4wp-style-switcher (extends 4wp-dev-toolkit).</description>
+
+	<rule ref="../4wp-dev-toolkit/phpcs.xml.dist"/>
+
+	<file>4wp-style-switcher.php</file>
+	<file>src</file>
+	<file>views</file>
+	<file>blocks</file>
+
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+	<exclude-pattern>*/tests/*</exclude-pattern>
+
+	<config name="text_domain" value="4wp-style-switcher"/>
+</ruleset>
