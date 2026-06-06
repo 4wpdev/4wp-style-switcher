@@ -4,7 +4,7 @@ Tags: full-site-editing, theme.json, dark mode, style variations, block-theme
 Requires at least: 6.4
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 0.2.5
+Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,7 +22,7 @@ Source code and releases: [github.com/4wpdev/4wp-style-switcher](https://github.
 
 Human-readable PHP source is in the public GitHub repository above. The plugin ZIP includes `src/` (PSR-4 autoload via `src/Autoload.php` when `vendor/` is absent). No npm build step — front-end scripts ship as plain JS in `assets/`.
 
-**Live demo (WordPress Playground):** https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/4wpdev/4wp-style-switcher/v0.2.5/.wordpress-org/assets/blueprints/blueprint.json
+**Live demo (WordPress Playground):** https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/4wpdev/4wp-style-switcher/v1.0.0/.wordpress-org/assets/blueprints/blueprint.json
 
 The demo site **Style Switcher** uses Twenty Twenty-Five: About, Morning, Afternoon, and Evening pages with per-page styles, A/B light vs dark, a bottom-right visitor switcher, and Light/Dark in the header and footer menus.
 
@@ -75,6 +75,9 @@ It lists variations allowed on the **Variations** settings tab. The menu Light/D
 
 == Upgrade Notice ==
 
+= 1.0.0 =
+First WordPress.org release. Plugin Check fixes, readme trademark disclaimer, Playground blueprint v1.0.0.
+
 = 0.2.5 =
 Performance: request-level caching for style resolution and theme.json variation lookups.
 
@@ -90,6 +93,12 @@ Fixes style switching on WordPress Playground (HTTPS cookie + dynamic demo slugs
 First feature release: visitor switcher, Light/Dark navigation block, A/B stats, and Playground demo.
 
 == Changelog ==
+
+= 1.0.0 =
+* First WordPress.org release (1.0.0).
+* Plugin Check: inline script moved to enqueued assets; security and naming fixes.
+* readme.txt: 4WP trademark disclaimer, Development, Blocks, Privacy sections.
+* Playground blueprint and demo links updated for v1.0.0.
 
 = 0.2.5 =
 * Request-level caching in Style_Registry, Style_Resolver, and Style_Applicator (faster page loads).

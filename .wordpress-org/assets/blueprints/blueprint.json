@@ -20,7 +20,7 @@
 			"step": "installPlugin",
 			"pluginData": {
 				"resource": "url",
-				"url": "https://codeload.github.com/4wpdev/4wp-style-switcher/zip/refs/tags/v0.2.5",
+				"url": "https://codeload.github.com/4wpdev/4wp-style-switcher/zip/refs/tags/v1.0.0",
 				"caption": "Installing 4WP Style Switcher"
 			},
 			"options": {

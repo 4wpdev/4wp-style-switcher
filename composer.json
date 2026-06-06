@@ -2,7 +2,7 @@
 	"name": "4wp-dev/4wp-style-switcher",
 	"description": "4WP Theme Style Switcher — theme.json style variations per page and visitor Light/Dark toggle (FSE).",
 	"type": "wordpress-plugin",
-	"version": "0.2.5",
+	"version": "1.0.0",
 	"license": "GPL-2.0-or-later",
 	"require": {
 		"php": ">=7.4"

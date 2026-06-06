@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.0 — 2026-06-06
+
+- First WordPress.org release.
+- Plugin Check fixes; readme trademark and Playground blueprint v1.0.0.
+
 ## 0.2.5 — 2026-06-01
 
 - Performance: request-level caching for theme variation lookups, style resolution, and theme.json merge preparation.
