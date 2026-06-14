@@ -4,11 +4,15 @@ Tags: full-site-editing, theme.json, dark mode, style variations, block-theme
 Requires at least: 6.4
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 Apply theme.json style variations per page or let visitors switch styles on the frontend (FSE block themes).
+
+= Demo =
+
+https://www.youtube.com/watch?v=JDGOF2B2zqQ
 
 == Description ==
 
@@ -75,6 +79,9 @@ It lists variations allowed on the **Variations** settings tab. The menu Light/D
 
 == Upgrade Notice ==
 
+= 1.0.1 =
+Review T1: Plugin URI points to 4wp.dev; removed Playground URL constant from plugin PHP (demo link remains in readme only).
+
 = 1.0.0 =
 First WordPress.org release. Plugin Check fixes, readme trademark disclaimer, Playground blueprint v1.0.0.
 
@@ -93,6 +100,10 @@ Fixes style switching on WordPress Playground (HTTPS cookie + dynamic demo slugs
 First feature release: visitor switcher, Light/Dark navigation block, A/B stats, and Playground demo.
 
 == Changelog ==
+
+= 1.0.1 =
+* Plugin URI: https://4wp.dev/ (GitHub link stays in readme Development section).
+* Removed `FORWP_STYLE_SWITCHER_PLAYGROUND_URL` from plugin PHP; no remote URLs in runtime code.
 
 = 1.0.0 =
 * First WordPress.org release (1.0.0).
@@ -143,5 +154,3 @@ First feature release: visitor switcher, Light/Dark navigation block, A/B stats,
 * `forwp_style_switcher_ab_assigned` — after A/B cohort assignment.
 * `forwp_style_switcher_analytics_track` — analytics events.
 * `forwp_style_switcher_ab_assignment_enabled` — filter A/B assignment.
-
-**Playground URL constant:** `FORWP_STYLE_SWITCHER_PLAYGROUND_URL` in the main plugin file.

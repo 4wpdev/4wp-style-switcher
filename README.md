@@ -6,6 +6,12 @@
 
 Apply **theme.json style variations** per page, let visitors switch styles on the frontend, and add a **Light/Dark** toggle to the navigation menu (FSE block themes).
 
+![4WP Style Switcher](.wordpress-org/assets/banner-1544x500.png)
+
+## Demo
+
+[![Watch the 4WP Style Switcher demo on YouTube](https://img.youtube.com/vi/JDGOF2B2zqQ/hqdefault.jpg)](https://www.youtube.com/watch?v=JDGOF2B2zqQ)
+
 ## Try it in WordPress Playground
 
 **[Open live demo →](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/4wpdev/4wp-style-switcher/v1.0.0/.wordpress-org/assets/blueprints/blueprint.json)**

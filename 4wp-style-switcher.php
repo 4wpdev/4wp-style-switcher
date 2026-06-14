@@ -1,9 +1,9 @@
 <?php
 /**
  * Plugin Name:       4WP Style Switcher
- * Plugin URI:        https://github.com/4wpdev/4wp-style-switcher
+ * Plugin URI:        https://4wp.dev/
  * Description:       Apply theme.json style variations per page; visitor style switcher and Light/Dark menu toggle for FSE block themes.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Requires at least: 6.4
  * Requires PHP:      7.4
  * Author:            4wpdev
@@ -16,12 +16,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'FORWP_STYLE_SWITCHER_VERSION', '1.0.0' );
+define( 'FORWP_STYLE_SWITCHER_VERSION', '1.0.1' );
 
-define(
-	'FORWP_STYLE_SWITCHER_PLAYGROUND_URL',
-	'https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/4wpdev/4wp-style-switcher/v1.0.0/.wordpress-org/assets/blueprints/blueprint.json'
-);
 define( 'FORWP_STYLE_SWITCHER_FILE', __FILE__ );
 define( 'FORWP_STYLE_SWITCHER_PATH', plugin_dir_path( __FILE__ ) );
 define( 'FORWP_STYLE_SWITCHER_URL', plugin_dir_url( __FILE__ ) );
