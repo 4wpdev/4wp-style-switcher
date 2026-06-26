@@ -1,5 +1,5 @@
 === 4WP Style Switcher ===
-Contributors: 4wpdev
+Contributors: 4wpdev, anatolikkk
 Tags: full-site-editing, theme.json, dark mode, style variations, block-theme
 Requires at least: 6.4
 Tested up to: 7.0
@@ -10,11 +10,11 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 Apply theme.json style variations per page or let visitors switch styles on the frontend (FSE block themes).
 
+== Description ==
+
 = Demo =
 
 https://www.youtube.com/watch?v=JDGOF2B2zqQ
-
-== Description ==
 
 4WP Style Switcher reads **style variations** from the active block theme (`theme.json` and `/styles/*.json`).
 
