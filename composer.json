@@ -1,42 +1,42 @@
 {
-	"name": "4wp-dev/4wp-style-switcher",
-	"description": "4WP Theme Style Switcher — theme.json style variations per page and visitor Light/Dark toggle (FSE).",
-	"type": "wordpress-plugin",
-	"version": "1.0.1",
-	"license": "GPL-2.0-or-later",
-	"require": {
-		"php": ">=7.4"
-	},
-	"require-dev": {
-		"4wpdev/4wp-dev-toolkit": "@dev"
-	},
-	"repositories": [
-		{
-			"type": "path",
-			"url": "../4wp-dev-toolkit",
-			"options": {
-				"symlink": true
-			}
-		}
-	],
-	"autoload": {
-		"psr-4": {
-			"ForWP\\StyleSwitcher\\": "src/"
-		}
-	},
-	"autoload-dev": {
-		"psr-4": {
-			"ForWP\\StyleSwitcher\\Tests\\": "tests/"
-		}
-	},
-	"config": {
-		"allow-plugins": {
-			"dealerdirect/phpcodesniffer-composer-installer": true
-		},
-		"sort-packages": true
-	},
-	"scripts": {
-		"lint": "phpcs",
-		"test": "phpunit"
-	}
+    "name": "4wpdev/4wp-style-switcher",
+    "description": "4WP Theme Style Switcher — theme.json style variations per page and visitor Light/Dark toggle (FSE).",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "require": {
+        "php": ">=7.4",
+        "composer/installers": "^2.0"
+    },
+    "require-dev": {
+        "4wpdev/4wp-dev-toolkit": "@dev"
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../4wp-dev-toolkit",
+            "options": {
+                "symlink": true
+            }
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "ForWP\\StyleSwitcher\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ForWP\\StyleSwitcher\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        },
+        "sort-packages": true
+    },
+    "scripts": {
+        "lint": "phpcs",
+        "test": "phpunit"
+    }
 }
